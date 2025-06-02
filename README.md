@@ -12,6 +12,8 @@ A comprehensive WhatsApp integration API solution with additional services for e
 
 Evolution API provides a robust interface for integrating WhatsApp functionality into your applications. This implementation includes PostgreSQL for data persistence, Redis for caching, and RabbitMQ for message queuing, creating a complete ecosystem for WhatsApp API integration.
 
+> ⚠️ **How to solve the issue if you [can’t see the QR code](https://github.com/carrilloapps/evolution-api-coolify/issues/1)?**
+
 ## 📋 Table of Contents
 
 - [Quick Start](#quick-start)
