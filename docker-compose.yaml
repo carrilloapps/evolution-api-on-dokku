@@ -58,6 +58,9 @@ services:
     environment:
       # Autenticación API
       - AUTHENTICATION_API_KEY=${AUTHENTICATION_API_KEY:-c4b46XpQs2Lw7tF9hM5jN8aD3}
+
+      # Custom ENV's
+      - CONFIG_SESSION_PHONE_VERSION=${CONFIG_SESSION_PHONE_VERSION:-2.2432.5.0}
       
       # Configuración de base de datos
       - DATABASE_ENABLED=${DATABASE_ENABLED:-true}
