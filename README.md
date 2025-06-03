@@ -1,7 +1,7 @@
 # Evolution API - WhatsApp Integration System
 
-**Version:** 2.2.3  
-**Updated:** May 20, 2025
+**Version:** 2.2.0  
+**Updated:** Jun 3, 2025
 
 A comprehensive WhatsApp integration API solution with additional services for enhanced performance, scalability, and reliability.
 
