@@ -1,185 +1,178 @@
-# Evolution API - Dokku
+# Evolution API en Dokku
 
-Evolution API v2.2.0 para WhatsApp desplegado en Dokku con PostgreSQL.
+[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.2.0-green.svg)](https://github.com/EvolutionAPI/evolution-api)
+[![Dokku](https://img.shields.io/badge/Dokku-Compatible-blue.svg)](https://github.com/dokku/dokku)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.1-blue.svg)](https://www.postgresql.org/)
 
-## 📋 Requisitos Previos
+## Descripción
 
-- Servidor con Dokku instalado y configurado
-- Acceso SSH al servidor
-- Git configurado localmente
-- Dominio apuntando al servidor (opcional)
+Esta guía explica cómo desplegar [Evolution API](https://evolution-api.com/), una API REST completa para WhatsApp, en un servidor [Dokku](http://dokku.viewdocs.io/dokku/). Dokku es un PaaS ligero que simplifica el despliegue y gestión de aplicaciones usando Docker.
 
-## 🚀 Instalación Desde Cero
+## Requisitos Previos
 
-### Paso 1: Clonar o Crear el Repositorio Local
+Antes de continuar, asegúrate de tener:
 
-```bash
-# Si ya tienes el repo
-git clone <tu-repo-url>
-cd evolution-api-coolify
+- Un servidor con [Dokku instalado](http://dokku.viewdocs.io/dokku/getting-started/installation/)
+- El [plugin de PostgreSQL](https://github.com/dokku/dokku-postgres) instalado en Dokku
+- (Opcional) El [plugin de Let's Encrypt](https://github.com/dokku/dokku-letsencrypt) para certificados SSL
+- Dominio apuntando a tu servidor (opcional)
 
-# O crear uno nuevo desde estos archivos
-mkdir evolution-api-dokku
-cd evolution-api-dokku
-git init
-# Copiar los archivos: Dockerfile, app.json, docker-compose.yaml, etc.
-```
+## Instrucciones de Instalación
 
-### Paso 2: Conectar al Servidor Dokku (SSH)
+### 1. Crear la Aplicación
+
+Conéctate a tu servidor Dokku y crea la app `evo`:
 
 ```bash
-ssh root@tu-servidor
-# O si usas usuario dokku:
-ssh dokku@tu-servidor
-```
-
-### Paso 3: Crear la Aplicación en Dokku
-
-```bash
-# Crear la app llamada "evo"
 dokku apps:create evo
 ```
 
-### Paso 4: Instalar y Configurar PostgreSQL
+### 2. Configurar PostgreSQL
+
+#### Instalar, Crear y Vincular PostgreSQL
+
+1. Instalar el plugin de PostgreSQL:
+
+   ```bash
+   dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
+   ```
+
+2. Crear el servicio PostgreSQL:
+
+   ```bash
+   dokku postgres:create evo
+   ```
+
+3. Vincular PostgreSQL a la aplicación:
+
+   ```bash
+   dokku postgres:link evo evo
+   ```
+
+#### Configurar la URI de Conexión
+
+Evolution API requiere `DATABASE_CONNECTION_URI` además de `DATABASE_URL`:
 
 ```bash
-# Instalar el plugin de PostgreSQL (solo primera vez en el servidor)
-dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
-
-# Crear servicio PostgreSQL con el mismo nombre que la app
-dokku postgres:create evo
-
-# Vincular PostgreSQL a la aplicación
-dokku postgres:link evo evo
-```
-
-Esto crea automáticamente la variable `DATABASE_URL`.
-
-### Paso 5: Configurar Variable de Conexión a Base de Datos
-
-```bash
-# Configurar DATABASE_CONNECTION_URI usando el valor de DATABASE_URL
 dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
 ```
 
-### Paso 6: Configurar Puertos
+### 3. Configurar Almacenamiento Persistente
+
+Para persistir las instancias de WhatsApp entre reinicios, crea y monta un directorio:
 
 ```bash
-# Mapear puerto 80 (externo) al 8080 (interno del contenedor)
-dokku ports:set evo http:80:8080
-```
-
-### Paso 7: Configurar Almacenamiento Persistente
-
-```bash
-# Crear directorio para almacenamiento persistente
 dokku storage:ensure-directory evo
-
-# Montar volumen para instancias de WhatsApp
 dokku storage:mount evo /var/lib/dokku/data/storage/evo:/evolution/instances
 ```
 
-### Paso 8: Salir del Servidor
+### 4. Configurar Dominio y Puertos
+
+Configura el dominio para tu aplicación:
 
 ```bash
-exit
+dokku domains:set evo evo.example.com
 ```
 
-### Paso 9: Agregar Remoto de Dokku (En tu Máquina Local)
+Mapea el puerto interno `8080` al puerto externo `80`:
 
 ```bash
-# Agregar remoto de Dokku
-git remote add dokku dokku@tu-servidor:evo
-
-# O si usas root:
-git remote add dokku root@tu-servidor:evo
+dokku ports:set evo http:80:8080
 ```
 
-### Paso 10: Desplegar la Aplicación
+### 5. Desplegar la Aplicación
+
+Puedes desplegar la aplicación usando uno de los siguientes métodos:
+
+#### Opción 1: Despliegue con `dokku git:sync`
+
+Si el repositorio está alojado en un servidor Git remoto con URL HTTPS, puedes desplegar directamente:
 
 ```bash
-# Asegurarte de que todos los archivos están commiteados
-git add .
-git commit -m "Deploy Evolution API to Dokku"
-
-# Hacer push a Dokku
-git push dokku master
-# O si tu rama principal es "main":
-git push dokku main:master
+dokku git:sync --build evo https://github.com/tu-usuario/evolution-api-dokku.git
 ```
 
-¡Listo! La aplicación se desplegará automáticamente.
+Esto descargará el código, construirá y desplegará automáticamente.
 
-## ✅ Verificar el Deploy
+#### Opción 2: Clonar y Push Manual
 
-### Ver Logs en Tiempo Real
+Si prefieres trabajar localmente:
 
-```bash
-ssh dokku@tu-servidor
-dokku logs evo -t
-```
+1. Clonar el repositorio:
 
-### Ver Configuración
+   ```bash
+   git clone https://github.com/tu-usuario/evolution-api-dokku.git
+   cd evolution-api-dokku
+   ```
 
-```bash
-dokku config evo
-```
+2. Agregar tu servidor Dokku como remoto:
 
-Deberías ver todas las variables de entorno configuradas, incluyendo:
-- `DATABASE_URL`
-- `DATABASE_CONNECTION_URI`
-- `DATABASE_PROVIDER=postgresql`
-- `CACHE_REDIS_ENABLED=false`
-- `CACHE_LOCAL_ENABLED=false`
+   ```bash
+   git remote add dokku dokku@tu-servidor.com:evo
+   ```
 
-### Obtener API Key
+3. Hacer push a Dokku:
+
+   ```bash
+   git push dokku master
+   ```
+
+Elige el método que mejor se adapte a tu flujo de trabajo.
+
+### 6. Habilitar SSL (Opcional)
+
+Asegura tu aplicación con un certificado SSL de Let's Encrypt:
+
+1. Agregar el puerto HTTPS:
+
+   ```bash
+   dokku ports:add evo https:443:8080
+   ```
+
+2. Instalar el plugin de Let's Encrypt:
+
+   ```bash
+   dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
+   ```
+
+3. Configurar el email de contacto:
+
+   ```bash
+   dokku letsencrypt:set evo email tu@example.com
+   ```
+
+4. Habilitar Let's Encrypt:
+
+   ```bash
+   dokku letsencrypt:enable evo
+   ```
+
+5. Configurar renovación automática:
+
+   ```bash
+   dokku letsencrypt:cron-job --add
+   ```
+
+## Finalización
+
+¡Felicidades! Tu instancia de Evolution API está funcionando. Puedes acceder en:
+
+- **HTTP**: `http://evo.example.com`
+- **HTTPS**: `https://evo.example.com` (si configuraste SSL)
+
+### Obtener tu API Key
 
 ```bash
 dokku config:get evo AUTHENTICATION_API_KEY
 ```
 
-### Ver Estado de la Aplicación
-
-```bash
-dokku ps:report evo
-```
-
-## 🌐 Acceder a la Aplicación
-
-Después del deploy exitoso, tu aplicación estará disponible en:
-
-- **Con dominio configurado:** `http://tu-dominio.com`
-- **Sin dominio:** `http://tu-servidor-ip`
-
-La API escucha en el puerto configurado (80 por defecto).
-
 ### Probar la API
 
 ```bash
-curl http://tu-dominio.com
+curl https://evo.example.com
 ```
 
-Deberías recibir una respuesta de Evolution API.
-
-## 🔐 Configurar SSL (Opcional pero Recomendado)
-
-```bash
-# Instalar plugin de Let's Encrypt (solo primera vez)
-sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
-
-# Configurar email
-dokku letsencrypt:set evo email tu@email.com
-
-# Habilitar SSL
-dokku letsencrypt:enable evo
-
-# Configurar renovación automática
-dokku letsencrypt:cron-job --add
-```
-
-Ahora tu app estará en `https://tu-dominio.com`.
-
-## 🔧 Comandos Útiles
+## Comandos Útiles
 
 ### Logs y Monitoreo
 
@@ -187,172 +180,51 @@ Ahora tu app estará en `https://tu-dominio.com`.
 # Ver logs en tiempo real
 dokku logs evo -t
 
-# Ver últimos logs
-dokku logs evo
-
-# Ver reporte completo
-dokku ps:report evo
-```
-
-### Gestión de la Aplicación
-
-```bash
-# Reiniciar app
-dokku ps:restart evo
-
-# Detener app
-dokku ps:stop evo
-
-# Iniciar app
-dokku ps:start evo
-
-# Reconstruir app
-dokku ps:rebuild evo
-```
-
-### Configuración
-
-```bash
-# Ver todas las variables
+# Ver configuración
 dokku config evo
-
-# Ver una variable específica
-dokku config:get evo DATABASE_URL
-
-# Agregar/modificar variable
-dokku config:set evo NUEVA_VARIABLE="valor"
-
-# Eliminar variable
-dokku config:unset evo VARIABLE
 ```
 
-### PostgreSQL
+### Gestión de PostgreSQL
 
 ```bash
-# Ver información de PostgreSQL
+# Información de PostgreSQL
 dokku postgres:info evo
 
 # Conectar a PostgreSQL
 dokku postgres:connect evo
 
-# Backup de PostgreSQL
+# Backup
 dokku postgres:backup evo backup-$(date +%Y%m%d)
-
-# Restaurar backup
-dokku postgres:import evo < backup.sql
-
-# Ver logs de PostgreSQL
-dokku postgres:logs evo -t
 ```
 
-### Dominios
-
-```bash
-# Agregar dominio personalizado
-dokku domains:add evo tu-dominio.com
-
-# Ver dominios configurados
-dokku domains:report evo
-
-# Eliminar dominio
-dokku domains:remove evo tu-dominio.com
-```
-
-### Almacenamiento
-
-```bash
-# Ver volúmenes montados
-dokku storage:report evo
-
-# Agregar más volúmenes
-dokku storage:mount evo /host/path:/container/path
-```
-
-## 🔄 Actualizaciones
+### Actualizaciones
 
 Para actualizar la aplicación:
 
 ```bash
-# En tu máquina local
-git pull origin master  # Obtener últimos cambios
-git push dokku master   # Desplegar a Dokku
+git pull origin master
+git push dokku master
 ```
 
-Dokku automáticamente:
-1. Construye la nueva imagen
-2. Ejecuta las migraciones de Prisma
-3. Hace health checks
-4. Reemplaza el contenedor antiguo con el nuevo
+Dokku ejecutará automáticamente las migraciones de Prisma y los health checks.
 
-## 🐛 Troubleshooting
+## Desarrollo Local
 
-### Error: "Database provider invalid"
+Para desarrollo local con docker-compose:
 
 ```bash
-# Verificar que DATABASE_PROVIDER está configurado
-dokku config:get evo DATABASE_PROVIDER
-
-# Si está vacío, configurarlo
-dokku config:set evo DATABASE_PROVIDER="postgresql"
+cp .env.example .env
+docker-compose up -d
 ```
 
-### Error: "Can't reach database server"
-
-```bash
-# Verificar DATABASE_CONNECTION_URI
-dokku config:get evo DATABASE_CONNECTION_URI
-
-# Reconfigurar desde DATABASE_URL
-dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
-```
-
-### Health Check Falla
-
-```bash
-# Ver logs del contenedor
-dokku logs evo -t
-
-# Verificar que el puerto está correcto
-dokku ports:list evo
-
-# Reintentar deployment
-dokku ps:rebuild evo
-```
-
-### PostgreSQL No Conecta
-
-```bash
-# Verificar que el servicio está corriendo
-dokku postgres:info evo
-
-# Verificar el link
-dokku postgres:links evo
-
-# Re-vincular si es necesario
-dokku postgres:unlink evo evo
-dokku postgres:link evo evo
-```
-
-## 📚 Documentación Adicional
-
-- [Evolution API](https://doc.evolution-api.com/)
-- [Dokku Docs](https://dokku.com/docs/)
-- [Dokku PostgreSQL Plugin](https://github.com/dokku/dokku-postgres)
-
-## 🌟 Características
+## Características
 
 - ✅ Solo PostgreSQL (sin Redis/Cache)
-- ✅ Despliegue automático con health checks
-- ✅ Migraciones de Prisma automáticas
-- ✅ Almacenamiento persistente para instancias
+- ✅ Migraciones automáticas de Prisma
+- ✅ Health checks configurados
+- ✅ Almacenamiento persistente
 - ✅ Variables de entorno pre-configuradas
-- ✅ SSL con Let's Encrypt
 
-## 📝 Notas
+## Documentación Adicional
 
-- **API Key**: Se genera automáticamente en el primer deploy
-- **Puerto interno**: La app escucha en el puerto 8080
-- **Puerto externo**: Dokku mapea al puerto 80 (o 443 con SSL)
-- **Base de datos**: PostgreSQL gestionado por Dokku
-- **Cache**: Deshabilitado (CACHE_REDIS_ENABLED=false, CACHE_LOCAL_ENABLED=false)
-- **Backups**: Configurar backups periódicos de PostgreSQL con cron
+Para más información sobre Evolution API, visita la [documentación oficial](https://doc.evolution-api.com/).
