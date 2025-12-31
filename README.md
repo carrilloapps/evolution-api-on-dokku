@@ -61,6 +61,7 @@ dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_UR
 
 Evolution API requiere una API Key global para todas las peticiones. Genera una de forma segura:
 
+**En Linux/macOS:**
 ```bash
 # Genera una API Key aleatoria y segura de 32 caracteres
 API_KEY=$(openssl rand -hex 16)
@@ -68,6 +69,16 @@ dokku config:set evo AUTHENTICATION_API_KEY="$API_KEY"
 
 # Verifica que se configuró correctamente
 dokku config:get evo AUTHENTICATION_API_KEY
+```
+
+**En Windows (PowerShell):**
+```powershell
+# Genera una API Key aleatoria y segura de 32 caracteres
+$API_KEY = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+ssh tu-servidor "config:set evo AUTHENTICATION_API_KEY=$API_KEY"
+
+# Verifica que se configuró correctamente
+ssh tu-servidor "config:get evo AUTHENTICATION_API_KEY"
 ```
 
 > **Importante**: Guarda esta API Key en un lugar seguro. La necesitarás para todas las peticiones a la API.
@@ -137,28 +148,36 @@ Puedes desplegar la aplicación usando uno de los siguientes métodos:
 
 #### Opción 1: Despliegue con `dokku git:sync`
 
-Si el repositorio está alojado en un servidor Git remoto con URL HTTPS, puedes desplegar directamente:
+Si tienes acceso SSH al servidor Dokku, puedes desplegar directamente desde el repositorio oficial:
 
 ```bash
-dokku git:sync --build evo https://github.com/tu-usuario/evolution-api-dokku.git
+dokku git:sync --build evo https://github.com/carrilloapps/evolution-api-on-dokku.git
 ```
 
 Esto descargará el código, construirá y desplegará automáticamente.
 
+> **Nota**: Este comando debe ejecutarse desde el servidor Dokku via SSH.
+
 #### Opción 2: Clonar y Push Manual
 
-Si prefieres trabajar localmente:
+Si prefieres trabajar localmente (funciona en **Windows, macOS y Linux**):
 
 1. Clonar el repositorio:
 
    ```bash
-   git clone https://github.com/tu-usuario/evolution-api-dokku.git
-   cd evolution-api-dokku
+   git clone https://github.com/carrilloapps/evolution-api-on-dokku.git
+   cd evolution-api-on-dokku
    ```
 
 2. Agregar tu servidor Dokku como remoto:
 
+   **Linux/macOS/Windows (Git Bash):**
    ```bash
+   git remote add dokku dokku@tu-servidor.com:evo
+   ```
+
+   **Windows (PowerShell/CMD):**
+   ```powershell
    git remote add dokku dokku@tu-servidor.com:evo
    ```
 
@@ -258,6 +277,7 @@ dokku config evo
 
 ### Gestión de PostgreSQL
 
+**Linux/macOS:**
 ```bash
 # Información de PostgreSQL
 dokku postgres:info evo
@@ -267,6 +287,19 @@ dokku postgres:connect evo
 
 # Backup
 dokku postgres:backup evo backup-$(date +%Y%m%d)
+```
+
+**Windows (PowerShell):**
+```powershell
+# Información de PostgreSQL
+ssh tu-servidor "postgres:info evo"
+
+# Conectar a PostgreSQL
+ssh tu-servidor "postgres:connect evo"
+
+# Backup
+$fecha = Get-Date -Format "yyyyMMdd"
+ssh tu-servidor "postgres:backup evo backup-$fecha"
 ```
 
 ### Actualizaciones
