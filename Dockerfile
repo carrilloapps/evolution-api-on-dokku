@@ -7,7 +7,9 @@ EXPOSE 8080
 RUN mkdir -p /evolution/instances
 
 # Set default environment variables (Redis/Cache disabled, only PostgreSQL)
-ENV DATABASE_ENABLED=true \
+ENV SERVER_URL=http://localhost:8080 \
+    DEL_INSTANCE=false \
+    DATABASE_ENABLED=true \
     DATABASE_PROVIDER=postgresql \
     DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange \
     DATABASE_SAVE_DATA_INSTANCE=true \

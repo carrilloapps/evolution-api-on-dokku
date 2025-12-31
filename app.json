@@ -18,9 +18,16 @@
     }
   ],
   "env": {
+    "SERVER_URL": {
+      "description": "Public URL of the API server",
+      "required": true
+    },
     "AUTHENTICATION_API_KEY": {
       "description": "API authentication key",
       "generator": "secret"
+    },
+    "DEL_INSTANCE": {
+      "value": "false"
     },
     "DATABASE_ENABLED": {
       "value": "true"
@@ -77,9 +84,9 @@
         "type": "startup",
         "name": "web-startup",
         "path": "/",
-        "wait": 10,
-        "timeout": 10,
-        "attempts": 6
+        "wait": 15,
+        "timeout": 15,
+        "attempts": 10
       },
       {
         "type": "liveness",

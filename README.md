@@ -50,12 +50,16 @@ dokku apps:create evo
    dokku postgres:link evo evo
    ```
 
-#### Configure Connection URI
+#### Configure Connection URI and SERVER_URL
 
-Evolution API requires `DATABASE_CONNECTION_URI` in addition to `DATABASE_URL`:
+Evolution API requires both `DATABASE_CONNECTION_URI` and `SERVER_URL`:
 
 ```bash
+# Set DATABASE_CONNECTION_URI
 dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
+
+# Set SERVER_URL (REQUIRED - replace with your actual domain)
+dokku config:set evo SERVER_URL="https://evo.isapp.dev"
 ```
 
 #### Generate Authentication API Key
