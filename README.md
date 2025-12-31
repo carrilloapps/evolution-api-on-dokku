@@ -18,6 +18,80 @@ Before proceeding, ensure you have:
 - (Optional) The [Let's Encrypt plugin](https://github.com/dokku/dokku-letsencrypt) for SSL certificates
 - Domain pointing to your server (optional)
 
+## System Requirements
+
+### Minimum Requirements (1-10 users)
+- **CPU**: 0.3 cores
+- **RAM**: 256MB
+- **Storage**: 2GB
+- **Network**: 10Mbps
+
+### Recommended for Small Teams (10-50 users)
+- **CPU**: 1 core
+- **RAM**: 512MB
+- **Storage**: 5GB
+- **Network**: 50Mbps
+
+### Recommended for Medium Teams (50-200 users)
+- **CPU**: 2 cores
+- **RAM**: 1GB
+- **Storage**: 10GB
+- **Network**: 100Mbps
+
+### High-Volume Deployments (200+ users)
+- **CPU**: 4+ cores
+- **RAM**: 2GB+
+- **Storage**: 20GB+
+- **Network**: 200Mbps+
+- **Considerations**: Consider Redis caching, load balancing, and horizontal scaling
+
+## Resource Optimization
+
+By default, this deployment is configured with **minimal resources** (256MB RAM, 0.5 CPU) to reduce costs. To adjust resources based on your needs:
+
+### Adjust RAM and CPU
+
+**Linux/macOS:**
+```bash
+# For 10-50 users (small team)
+dokku resource:limit evo --memory 512m --cpu 1
+
+# For 50-200 users (medium team)
+dokku resource:limit evo --memory 1024m --cpu 2
+
+# For 200+ users (high volume)
+dokku resource:limit evo --memory 2048m --cpu 4
+```
+
+**Windows (PowerShell):**
+```powershell
+# For 10-50 users
+ssh your-server "resource:limit evo --memory 512m --cpu 1"
+
+# For 50-200 users
+ssh your-server "resource:limit evo --memory 1024m --cpu 2"
+
+# For 200+ users
+ssh your-server "resource:limit evo --memory 2048m --cpu 4"
+```
+
+### Check Current Resource Usage
+
+**Linux/macOS:**
+```bash
+# View resource limits
+dokku resource:report evo
+
+# Monitor real-time usage
+dokku ps:report evo
+```
+
+**Windows (PowerShell):**
+```powershell
+ssh your-server "resource:report evo"
+ssh your-server "ps:report evo"
+```
+
 ## Installation Instructions
 
 ### 1. Create the Application
@@ -320,12 +394,72 @@ Dokku will automatically run Prisma migrations and health checks.
 
 ## Features
 
-- ✅ PostgreSQL only (no Redis/Cache)
-- ✅ Automatic Prisma migrations
-- ✅ Configured health checks
-- ✅ Persistent storage
-- ✅ Pre-configured environment variables
-- ✅ Resource limits (0.6 CPU, 512MB RAM)
+- ✅ **Minimal resource usage** (256MB RAM, 0.5 CPU by default)
+- ✅ **PostgreSQL only** (no Redis/Cache for simplicity)
+- ✅ **Automatic Prisma migrations**
+- ✅ **Optimized health checks** (single instance)
+- ✅ **Persistent storage**
+- ✅ **Pre-configured environment variables**
+- ✅ **Scalable** (easily adjust resources based on user load)
+
+## Performance Tips
+
+### 1. Enable Redis Cache for High Volume
+
+If you're handling 50+ users, enable Redis caching for better performance:
+
+```bash
+# Install Redis plugin
+dokku plugin:install https://github.com/dokku/dokku-redis.git redis
+
+# Create and link Redis
+dokku redis:create evo
+dokku redis:link evo evo
+
+# Enable Redis cache
+dokku config:set evo CACHE_REDIS_ENABLED=true
+dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
+```
+
+### 2. Database Optimization
+
+For high-volume deployments:
+
+```bash
+# Disable message history if not needed (saves storage)
+dokku config:set evo DATABASE_SAVE_DATA_HISTORIC=false
+
+# Disable label tracking if not needed
+dokku config:set evo DATABASE_SAVE_DATA_LABELS=false
+```
+
+### 3. Monitor Resource Usage
+
+Regularly check your application's resource consumption:
+
+```bash
+# Check memory and CPU usage
+dokku ps:report evo
+
+# View resource limits
+dokku resource:report evo
+
+# Monitor logs for performance issues
+dokku logs evo -t
+```
+
+### 4. Storage Management
+
+Evolution API stores WhatsApp media and instances in `/evolution/instances`. Monitor storage:
+
+```bash
+# Check storage usage
+dokku storage:report evo
+
+# Clean old media if needed (manual process)
+dokku enter evo web
+du -sh /evolution/instances/*
+```
 
 ## Contributing
 

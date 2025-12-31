@@ -7,8 +7,8 @@
     "web": {
       "quantity": 1,
       "resource": {
-        "memory": "512m",
-        "cpu": "0.6"
+        "memory": "256m",
+        "cpu": "0.3"
       }
     }
   },
@@ -62,20 +62,8 @@
     "CACHE_REDIS_ENABLED": {
       "value": "false"
     },
-    "CACHE_REDIS_URI": {
-      "value": ""
-    },
     "CACHE_LOCAL_ENABLED": {
       "value": "false"
-    },
-    "CONFIG_SESSION_PHONE_VERSION": {
-      "value": "2.3000.1031543708"
-    },
-    "CONFIG_SESSION_PHONE_CLIENT": {
-      "value": "carrilloapps"
-    },
-    "CONFIG_SESSION_PHONE_NAME": {
-      "value": "Chrome"
     }
   },
   "healthchecks": {
@@ -84,17 +72,9 @@
         "type": "startup",
         "name": "web-startup",
         "path": "/",
-        "wait": 15,
-        "timeout": 15,
-        "attempts": 10
-      },
-      {
-        "type": "liveness",
-        "name": "web-liveness",
-        "path": "/",
-        "wait": 0,
+        "wait": 10,
         "timeout": 10,
-        "attempts": 3
+        "attempts": 6
       }
     ]
   }
