@@ -80,10 +80,5 @@
         "attempts": 3
       }
     ]
-  },
-  "scripts": {
-    "dokku": {
-      "predeploy": "echo 'Preparing Evolution API deployment...'"
-    }
   }
 }
