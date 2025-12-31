@@ -6,11 +6,7 @@ EXPOSE 8080
 # Create volume directories if they don't exist
 RUN mkdir -p /evolution/instances
 
-# Copy release script
-COPY release.sh /usr/local/bin/release.sh
-RUN chmod +x /usr/local/bin/release.sh
-
-# Set default environment variables
+# Set default environment variables that will be overridden by Dokku config
 ENV DATABASE_ENABLED=true \
     DATABASE_PROVIDER=postgresql \
     DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange \
