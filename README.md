@@ -1,6 +1,6 @@
 # Evolution API en Dokku
 
-[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.2.0-green.svg)](https://github.com/EvolutionAPI/evolution-api)
+[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.3.7-green.svg)](https://github.com/EvolutionAPI/evolution-api)
 [![Dokku](https://img.shields.io/badge/Dokku-Compatible-blue.svg)](https://github.com/dokku/dokku)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.1-blue.svg)](https://www.postgresql.org/)
 
@@ -345,8 +345,16 @@ For more information about Evolution API, visit the [official documentation](htt
 
 ### Changelog
 
-This deployment uses Evolution API v2.2.0 which includes stable and tested features.
+This deployment uses Evolution API v2.3.7 which includes:
 
-> **Note**: Newer versions of Evolution API are available but may require additional configuration or testing. This deployment uses v2.2.0 for maximum stability.
+- ✅ **WhatsApp Business Meta Templates** - Create, update and delete WhatsApp Business templates
+- ✅ **Enhanced Webhook Events** - Track message sync progress with `isLatest` and progress percentage
+- ✅ **N8N Integration** - Support for quoted messages in chatbot integration
+- ✅ **WebSocket Improvements** - Wildcard host support for flexible connections
+- ✅ **Pix Payment Support** - Handle interactive Pix button messages
+- ✅ **Baileys Fixes** - Resolved authentication and reconnection issues
+- ✅ **Chatwoot Enhancements** - Improved contact management and message handling
+- ✅ **Proxy Support** - Fixed compatibility with Node.js 18+ and Undici
+- ✅ **Database Optimizations** - Better contact and chat deduplication
 
-For complete changelog and latest releases, visit [Evolution API Releases](https://github.com/EvolutionAPI/evolution-api/releases).
+For complete changelog, visit [Evolution API v2.3.7 Release](https://github.com/EvolutionAPI/evolution-api/releases/tag/v2.3.7).
