@@ -1,4 +1,4 @@
-FROM atendai/evolution-api:v2.2.0
+FROM atendai/evolution-api:v2.3.7
 
 # Expose the port the upstream image uses (container listens on 8080)
 EXPOSE 8080

@@ -1,6 +1,6 @@
 # Evolution API en Dokku
 
-[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.2.0-green.svg)](https://github.com/EvolutionAPI/evolution-api)
+[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.3.7-green.svg)](https://github.com/EvolutionAPI/evolution-api)
 [![Dokku](https://img.shields.io/badge/Dokku-Compatible-blue.svg)](https://github.com/dokku/dokku)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.1-blue.svg)](https://www.postgresql.org/)
 
@@ -321,6 +321,40 @@ Dokku ejecutará automáticamente las migraciones de Prisma y los health checks.
 - ✅ Almacenamiento persistente
 - ✅ Variables de entorno pre-configuradas
 
-## Documentación Adicional
+## Contributing
 
-Para más información sobre Evolution API, visita la [documentación oficial](https://doc.evolution-api.com/).
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Code of Conduct
+
+This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+## Acknowledgments
+
+- [Evolution API](https://github.com/EvolutionAPI/evolution-api) - The amazing WhatsApp API
+- [Dokku](https://dokku.com/) - Docker-powered PaaS
+- [PostgreSQL](https://www.postgresql.org/) - Powerful open source database
+
+## Additional Documentation
+
+For more information about Evolution API, visit the [official documentation](https://doc.evolution-api.com/).
+
+### Changelog
+
+This deployment uses Evolution API v2.3.7 which includes:
+
+- ✅ WhatsApp Business Meta Templates management
+- ✅ Enhanced webhook events with sync progress tracking
+- ✅ N8N integration improvements
+- ✅ WebSocket wildcard host support
+- ✅ Pix payment button support
+- ✅ Multiple bug fixes for Baileys authentication and message handling
+- ✅ Improved Chatwoot integration
+- ✅ Better proxy support
+- ✅ Enhanced contact and chat management
+
+For complete changelog, visit [Evolution API Releases](https://github.com/EvolutionAPI/evolution-api/releases/tag/v2.3.7).
