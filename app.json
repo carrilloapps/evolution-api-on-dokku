@@ -26,6 +26,12 @@
       "description": "API authentication key",
       "generator": "secret"
     },
+    "CONFIG_SESSION_PHONE_CLIENT": {
+      "value": "Evo APP"
+    },
+    "CONFIG_SESSION_PHONE_NAME": {
+      "value": "Chrome"
+    },
     "DEL_INSTANCE": {
       "value": "false"
     },
