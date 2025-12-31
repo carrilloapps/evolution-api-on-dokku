@@ -65,17 +65,5 @@
     "CACHE_LOCAL_ENABLED": {
       "value": "false"
     }
-  },
-  "healthchecks": {
-    "web": [
-      {
-        "type": "startup",
-        "name": "web-startup",
-        "path": "/",
-        "wait": 10,
-        "timeout": 10,
-        "attempts": 6
-      }
-    ]
   }
 }
