@@ -1,0 +1,89 @@
+{
+  "name": "evolution-api",
+  "description": "Evolution API v2.2.0 for WhatsApp",
+  "keywords": ["whatsapp", "api", "evolution"],
+  "stack": "container",
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    {
+      "plan": "dokku-postgres:evo"
+    }
+  ],
+  "env": {
+    "AUTHENTICATION_API_KEY": {
+      "description": "API authentication key",
+      "generator": "secret"
+    },
+    "DATABASE_ENABLED": {
+      "value": "true"
+    },
+    "DATABASE_PROVIDER": {
+      "value": "postgresql"
+    },
+    "DATABASE_CONNECTION_CLIENT_NAME": {
+      "value": "evolution_exchange"
+    },
+    "DATABASE_SAVE_DATA_INSTANCE": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_DATA_NEW_MESSAGE": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_MESSAGE_UPDATE": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_DATA_CONTACTS": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_DATA_CHATS": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_DATA_LABELS": {
+      "value": "true"
+    },
+    "DATABASE_SAVE_DATA_HISTORIC": {
+      "value": "true"
+    },
+    "CACHE_LOCAL_ENABLED": {
+      "value": "true"
+    },
+    "CONFIG_SESSION_PHONE_VERSION": {
+      "value": "2.3000.1031543708"
+    },
+    "CONFIG_SESSION_PHONE_CLIENT": {
+      "value": "carrilloapps"
+    },
+    "CONFIG_SESSION_PHONE_NAME": {
+      "value": "Chrome"
+    }
+  },
+  "healthchecks": {
+    "web": [
+      {
+        "type": "startup",
+        "name": "web-startup",
+        "path": "/",
+        "wait": 10,
+        "timeout": 10,
+        "attempts": 6
+      },
+      {
+        "type": "liveness",
+        "name": "web-liveness",
+        "path": "/",
+        "wait": 0,
+        "timeout": 10,
+        "attempts": 3
+      }
+    ]
+  },
+  "scripts": {
+    "dokku": {
+      "predeploy": "echo 'Preparing Evolution API deployment...'"
+    }
+  }
+}

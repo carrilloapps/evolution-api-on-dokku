@@ -2,57 +2,16 @@
 
 Evolution API v2.2.0 desplegado en Dokku con PostgreSQL.
 
-## 🚀 Deploy Rápido
+## 🚀 Deploy Automático
 
-### En el Servidor Dokku (ejecutar primero):
+### 1. Configuración Mínima en el Servidor:
 
 ```bash
-# Crear app y configurar PostgreSQL
+# Crear app y PostgreSQL
 dokku apps:create evo
 dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 dokku postgres:create evo
 dokku postgres:link evo evo
-
-# Ejecutar script de inicialización de base de datos
-dokku postgres:connect evo << 'EOF'
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'evo_app_user') THEN
-        CREATE USER evo_app_user WITH PASSWORD 'jA54%B@rF7$pQs2*Lx8#mZvN9!wY3&tD';
-    END IF;
-END
-$$;
-
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'service_db') THEN
-        CREATE DATABASE service_db;
-    END IF;
-END
-$$;
-
-GRANT ALL PRIVILEGES ON DATABASE service_db TO evo_app_user;
-EOF
-
-# Configurar variables de entorno
-DB_URL=$(dokku config:get evo DATABASE_URL)
-dokku config:set --no-restart evo \
-  AUTHENTICATION_API_KEY="$(openssl rand -hex 32)" \
-  DATABASE_ENABLED="true" \
-  DATABASE_PROVIDER="postgresql" \
-  DATABASE_CONNECTION_URI="$DB_URL" \
-  DATABASE_CONNECTION_CLIENT_NAME="evolution_exchange" \
-  DATABASE_SAVE_DATA_INSTANCE="true" \
-  DATABASE_SAVE_DATA_NEW_MESSAGE="true" \
-  DATABASE_SAVE_MESSAGE_UPDATE="true" \
-  DATABASE_SAVE_DATA_CONTACTS="true" \
-  DATABASE_SAVE_DATA_CHATS="true" \
-  DATABASE_SAVE_DATA_LABELS="true" \
-  DATABASE_SAVE_DATA_HISTORIC="true" \
-  CACHE_LOCAL_ENABLED="true" \
-  CONFIG_SESSION_PHONE_VERSION="2.3000.1031543708" \
-  CONFIG_SESSION_PHONE_CLIENT="carrilloapps" \
-  CONFIG_SESSION_PHONE_NAME="Chrome"
 
 # Configurar puertos y almacenamiento
 dokku ports:set evo http:80:8080
@@ -60,35 +19,49 @@ dokku storage:ensure-directory evo
 dokku storage:mount evo /var/lib/dokku/data/storage/evo:/evolution/instances
 ```
 
-### Desde tu Máquina Local:
+### 2. Deploy desde tu Máquina:
 
 ```bash
-git remote add dokku dokku@your-server:evo
 git push dokku master
+```
+
+**¡Eso es todo!** El resto se configura automáticamente:
+- ✅ Variables de entorno con valores por defecto
+- ✅ DATABASE_CONNECTION_URI desde DATABASE_URL
+- ✅ Health checks configurados
+- ✅ API key generado automáticamente
+
+### 3. (Opcional) Inicializar usuarios adicionales de DB:
+
+```bash
+dokku postgres:connect evo << 'EOF'
+CREATE USER evo_app_user WITH PASSWORD 'tu_password_seguro';
+CREATE DATABASE service_db OWNER evo_app_user;
+GRANT ALL PRIVILEGES ON DATABASE service_db TO evo_app_user;
+EOF
 ```
 
 ## 📊 Comandos Útiles
 
 ```bash
-# Logs
+# Ver logs
 dokku logs evo -t
+
+# Ver configuración (incluyendo API key generado)
+dokku config evo
 
 # Reiniciar
 dokku ps:restart evo
 
-# Ver configuración
-dokku config evo
-
 # PostgreSQL
 dokku postgres:info evo
-dokku postgres:connect evo
 dokku postgres:backup evo backup-$(date +%Y%m%d)
 
-# SSL (Let's Encrypt)
+# SSL
 dokku letsencrypt:enable evo
 ```
 
-## 🔐 API Key
+## 🔐 Obtener API Key
 
 ```bash
 dokku config:get evo AUTHENTICATION_API_KEY
@@ -100,12 +73,3 @@ dokku config:get evo AUTHENTICATION_API_KEY
 cp .env.example .env
 docker-compose up -d
 ```
-
-## 📁 Estructura
-
-- `Dockerfile` - Build de la imagen
-- `CHECKS` - Health checks de Dokku
-- `DOKKU_SCALE` - Configuración de procesos
-- `.env.example` - Variables de entorno de ejemplo
-- `docker-compose.yaml` - Setup local
-- `init-db.sql` - Script inicial de PostgreSQL
