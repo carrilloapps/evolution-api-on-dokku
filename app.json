@@ -1,6 +1,6 @@
 {
   "name": "evolution-api",
-  "description": "Evolution API v2.3.7 for WhatsApp",
+  "description": "Evolution API v2.2.3 for WhatsApp",
   "keywords": ["whatsapp", "api", "evolution"],
   "stack": "container",
   "formation": {
