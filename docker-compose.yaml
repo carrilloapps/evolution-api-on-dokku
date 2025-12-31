@@ -19,35 +19,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
-  redis:
-    image: redis:latest
-    container_name: evolution_redis
-    restart: always
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: evolution_rabbitmq
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-guest}
-      - RABBITMQ_DEFAULT_PASS=${SERVICE_PASSWORD_RABBITMQ:-guest}
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
       
   evolution-api:
     container_name: evolution_api
@@ -60,8 +31,8 @@ services:
       - AUTHENTICATION_API_KEY=${AUTHENTICATION_API_KEY:-c4b46XpQs2Lw7tF9hM5jN8aD3}
 
       # Custom ENV's
-      - CONFIG_SESSION_PHONE_VERSION=${CONFIG_SESSION_PHONE_VERSION:-2.3000.1023394088}
-      - CONFIG_SESSION_PHONE_CLIENT=${CONFIG_SESSION_PHONE_CLIENT:-Evolution API}
+      - CONFIG_SESSION_PHONE_VERSION=${CONFIG_SESSION_PHONE_VERSION:-2.3000.1031543708}
+      - CONFIG_SESSION_PHONE_CLIENT=${CONFIG_SESSION_PHONE_CLIENT:-carrilloapps}
       - CONFIG_SESSION_PHONE_NAME=${CONFIG_SESSION_PHONE_NAME:-Chrome}
       
       # Configuración de base de datos
@@ -79,44 +50,11 @@ services:
       - DATABASE_SAVE_DATA_LABELS=${DATABASE_SAVE_DATA_LABELS:-true}
       - DATABASE_SAVE_DATA_HISTORIC=${DATABASE_SAVE_DATA_HISTORIC:-true}
       
-      # Configuración de Redis
-      - CACHE_REDIS_ENABLED=${CACHE_REDIS_ENABLED:-true}
-      - CACHE_REDIS_URI=redis://redis:6379/6
-      - CACHE_REDIS_PREFIX_KEY=${CACHE_REDIS_PREFIX_KEY:-evolution}
-      - CACHE_REDIS_SAVE_INSTANCES=${CACHE_REDIS_SAVE_INSTANCES:-false}
-      - CACHE_LOCAL_ENABLED=${CACHE_LOCAL_ENABLED:-false}
-      
-      # Configuración de RabbitMQ
-      - RABBITMQ_ENABLED=${RABBITMQ_ENABLED:-true}
-      - RABBITMQ_GLOBAL_ENABLED=${RABBITMQ_GLOBAL_ENABLED:-false}
-      - RABBITMQ_URI=amqp://${RABBITMQ_DEFAULT_USER:-guest}:${SERVICE_PASSWORD_RABBITMQ:-guest}@rabbitmq:5672
-      - RABBITMQ_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME:-evolution_exchange}
-      - RABBITMQ_EVENTS_APPLICATION_STARTUP=${RABBITMQ_EVENTS_APPLICATION_STARTUP:-false}
-      - RABBITMQ_EVENTS_QRCODE_UPDATED=${RABBITMQ_EVENTS_QRCODE_UPDATED:-true}
-      - RABBITMQ_EVENTS_MESSAGES_SET=${RABBITMQ_EVENTS_MESSAGES_SET:-true}
-      - RABBITMQ_EVENTS_MESSAGES_UPSERT=${RABBITMQ_EVENTS_MESSAGES_UPSERT:-true}
-      - RABBITMQ_EVENTS_MESSAGES_UPDATE=${RABBITMQ_EVENTS_MESSAGES_UPDATE:-true}
-      - RABBITMQ_EVENTS_MESSAGES_DELETE=${RABBITMQ_EVENTS_MESSAGES_DELETE:-true}
-      - RABBITMQ_EVENTS_SEND_MESSAGE=${RABBITMQ_EVENTS_SEND_MESSAGE:-true}
-      - RABBITMQ_EVENTS_CONTACTS_SET=${RABBITMQ_EVENTS_CONTACTS_SET:-true}
-      - RABBITMQ_EVENTS_CONTACTS_UPSERT=${RABBITMQ_EVENTS_CONTACTS_UPSERT:-true}
-      - RABBITMQ_EVENTS_CONTACTS_UPDATE=${RABBITMQ_EVENTS_CONTACTS_UPDATE:-true}
-      - RABBITMQ_EVENTS_PRESENCE_UPDATE=${RABBITMQ_EVENTS_PRESENCE_UPDATE:-true}
-      - RABBITMQ_EVENTS_CHATS_SET=${RABBITMQ_EVENTS_CHATS_SET:-true}
-      - RABBITMQ_EVENTS_CHATS_UPSERT=${RABBITMQ_EVENTS_CHATS_UPSERT:-true}
-      - RABBITMQ_EVENTS_CHATS_UPDATE=${RABBITMQ_EVENTS_CHATS_UPDATE:-true}
-      - RABBITMQ_EVENTS_CHATS_DELETE=${RABBITMQ_EVENTS_CHATS_DELETE:-true}
-      - RABBITMQ_EVENTS_GROUPS_UPSERT=${RABBITMQ_EVENTS_GROUPS_UPSERT:-true}
-      - RABBITMQ_EVENTS_GROUPS_UPDATE=${RABBITMQ_EVENTS_GROUPS_UPDATE:-true}
-      - RABBITMQ_EVENTS_GROUP_PARTICIPANTS_UPDATE=${RABBITMQ_EVENTS_GROUP_PARTICIPANTS_UPDATE:-true}
-      - RABBITMQ_EVENTS_CONNECTION_UPDATE=${RABBITMQ_EVENTS_CONNECTION_UPDATE:-true}
-      - RABBITMQ_EVENTS_CALL=${RABBITMQ_EVENTS_CALL:-true}
+      # Configuración de Cache
+      - CACHE_LOCAL_ENABLED=${CACHE_LOCAL_ENABLED:-true}
+
     depends_on:
       postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
         condition: service_healthy
     volumes:
       - evolution_instances:/evolution/instances
