@@ -1,19 +1,14 @@
-# Evolution API - Dokku
+#!/bin/bash
+# Script de configuración para ejecutar EN EL SERVIDOR DOKKU
+# Copia y pega estos comandos directamente en el servidor
 
-Evolution API v2.2.0 desplegado en Dokku con PostgreSQL.
-
-## 🚀 Deploy Rápido
-
-### En el Servidor Dokku (ejecutar primero):
-
-```bash
-# Crear app y configurar PostgreSQL
-dokku apps:create evo
-dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
-dokku postgres:create evo
-dokku postgres:link evo evo
+dokku apps:create evo 2>/dev/null || echo "✓ App existe"
+dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres 2>/dev/null || echo "✓ Plugin instalado"
+dokku postgres:create evo 2>/dev/null || echo "✓ PostgreSQL existe"
+dokku postgres:link evo evo 2>/dev/null || echo "✓ PostgreSQL vinculado"
 
 # Ejecutar script de inicialización de base de datos
+echo "Ejecutando script de inicialización..."
 dokku postgres:connect evo << 'EOF'
 DO $$
 BEGIN
@@ -34,7 +29,6 @@ $$;
 GRANT ALL PRIVILEGES ON DATABASE service_db TO evo_app_user;
 EOF
 
-# Configurar variables de entorno
 DB_URL=$(dokku config:get evo DATABASE_URL)
 dokku config:set --no-restart evo \
   AUTHENTICATION_API_KEY="$(openssl rand -hex 32)" \
@@ -54,58 +48,10 @@ dokku config:set --no-restart evo \
   CONFIG_SESSION_PHONE_CLIENT="carrilloapps" \
   CONFIG_SESSION_PHONE_NAME="Chrome"
 
-# Configurar puertos y almacenamiento
 dokku ports:set evo http:80:8080
 dokku storage:ensure-directory evo
 dokku storage:mount evo /var/lib/dokku/data/storage/evo:/evolution/instances
-```
 
-### Desde tu Máquina Local:
-
-```bash
-git remote add dokku dokku@your-server:evo
-git push dokku master
-```
-
-## 📊 Comandos Útiles
-
-```bash
-# Logs
-dokku logs evo -t
-
-# Reiniciar
-dokku ps:restart evo
-
-# Ver configuración
-dokku config evo
-
-# PostgreSQL
-dokku postgres:info evo
-dokku postgres:connect evo
-dokku postgres:backup evo backup-$(date +%Y%m%d)
-
-# SSL (Let's Encrypt)
-dokku letsencrypt:enable evo
-```
-
-## 🔐 API Key
-
-```bash
-dokku config:get evo AUTHENTICATION_API_KEY
-```
-
-## 🌐 Desarrollo Local
-
-```bash
-cp .env.example .env
-docker-compose up -d
-```
-
-## 📁 Estructura
-
-- `Dockerfile` - Build de la imagen
-- `CHECKS` - Health checks de Dokku
-- `DOKKU_SCALE` - Configuración de procesos
-- `.env.example` - Variables de entorno de ejemplo
-- `docker-compose.yaml` - Setup local
-- `init-db.sql` - Script inicial de PostgreSQL
+echo ""
+echo "✅ Configuración completa. Ahora ejecuta: git push dokku master"
+echo "🔑 API Key: $(dokku config:get evo AUTHENTICATION_API_KEY)"
