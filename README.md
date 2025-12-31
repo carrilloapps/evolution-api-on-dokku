@@ -57,6 +57,21 @@ Evolution API requiere `DATABASE_CONNECTION_URI` además de `DATABASE_URL`:
 dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
 ```
 
+#### Generar API Key de Autenticación
+
+Evolution API requiere una API Key global para todas las peticiones. Genera una de forma segura:
+
+```bash
+# Genera una API Key aleatoria y segura de 32 caracteres
+API_KEY=$(openssl rand -hex 16)
+dokku config:set evo AUTHENTICATION_API_KEY="$API_KEY"
+
+# Verifica que se configuró correctamente
+dokku config:get evo AUTHENTICATION_API_KEY
+```
+
+> **Importante**: Guarda esta API Key en un lugar seguro. La necesitarás para todas las peticiones a la API.
+
 #### Crear Usuario y Base de Datos Adicional (Opcional)
 
 Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta los siguientes comandos **uno por uno**:
@@ -196,38 +211,38 @@ Asegura tu aplicación con un certificado SSL de Let's Encrypt:
 - **HTTP**: `http://evo.example.com`
 - **HTTPS**: `https://evo.example.com` (si configuraste SSL)
 
-### API Key de Autenticación
+### Obtener tu API Key
 
-Evolution API genera automáticamente una **API Key global** en el primer despliegue.
-
-#### Obtener tu API Key actual:
+Obtén la API Key que generaste durante la instalación:
 
 ```bash
 dokku config:get evo AUTHENTICATION_API_KEY
 ```
 
-#### Cambiar la API Key:
+**Resultado de ejemplo:**
+```
+oXZkh4B2FETGL31VeOzl6gqsdav9wmC0
+```
 
-Si deseas usar una API Key personalizada:
+### Cambiar la API Key
+
+Si deseas cambiar la API Key por una personalizada:
 
 ```bash
 dokku config:set evo AUTHENTICATION_API_KEY="tu-nueva-api-key-super-segura"
 ```
 
-> **Importante**: 
-> - La API Key se genera automáticamente usando el generador `secret` de Dokku
-> - Es una cadena aleatoria y segura
-> - Guárdala en un lugar seguro, la necesitarás para todas las peticiones a la API
-> - Puedes cambiarla en cualquier momento con el comando anterior
-
 ### Probar la API
 
-Una vez obtengas tu API Key, puedes probar la API:
+Prueba que la API esté funcionando correctamente:
 
 ```bash
+# Reemplaza TU_API_KEY con la que obtuviste
 curl -X GET https://evo.example.com \
-  -H "apikey: TU_API_KEY_AQUI"
+  -H "apikey: oXZkh4B2FETGL31VeOzl6gqsdav9wmC0"
 ```
+
+Deberías recibir una respuesta exitosa de Evolution API.
 
 ## Comandos Útiles
 
