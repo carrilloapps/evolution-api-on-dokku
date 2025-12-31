@@ -6,7 +6,7 @@ EXPOSE 8080
 # Create volume directories if they don't exist
 RUN mkdir -p /evolution/instances
 
-# Set default environment variables that will be overridden by Dokku config
+# Set default environment variables (Redis/Cache disabled, only PostgreSQL)
 ENV DATABASE_ENABLED=true \
     DATABASE_PROVIDER=postgresql \
     DATABASE_CONNECTION_CLIENT_NAME=evolution_exchange \
@@ -17,7 +17,9 @@ ENV DATABASE_ENABLED=true \
     DATABASE_SAVE_DATA_CHATS=true \
     DATABASE_SAVE_DATA_LABELS=true \
     DATABASE_SAVE_DATA_HISTORIC=true \
-    CACHE_LOCAL_ENABLED=true \
+    CACHE_REDIS_ENABLED=false \
+    CACHE_REDIS_URI="" \
+    CACHE_LOCAL_ENABLED=false \
     CONFIG_SESSION_PHONE_VERSION=2.3000.1031543708 \
     CONFIG_SESSION_PHONE_CLIENT=carrilloapps \
     CONFIG_SESSION_PHONE_NAME=Chrome

@@ -48,8 +48,14 @@
     "DATABASE_SAVE_DATA_HISTORIC": {
       "value": "true"
     },
+    "CACHE_REDIS_ENABLED": {
+      "value": "false"
+    },
+    "CACHE_REDIS_URI": {
+      "value": ""
+    },
     "CACHE_LOCAL_ENABLED": {
-      "value": "true"
+      "value": "false"
     },
     "CONFIG_SESSION_PHONE_VERSION": {
       "value": "2.3000.1031543708"
