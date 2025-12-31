@@ -208,15 +208,6 @@ git push dokku master
 
 Dokku ejecutará automáticamente las migraciones de Prisma y los health checks.
 
-## Desarrollo Local
-
-Para desarrollo local con docker-compose:
-
-```bash
-cp .env.example .env
-docker-compose up -d
-```
-
 ## Características
 
 - ✅ Solo PostgreSQL (sin Redis/Cache)
