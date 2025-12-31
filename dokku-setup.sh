@@ -6,7 +6,6 @@
 set -e
 
 APP_NAME="${1:-evo}"
-POSTGRES_SERVICE="${APP_NAME}-postgres"
 
 echo "🚀 Setting up Dokku app: $APP_NAME"
 
@@ -15,16 +14,16 @@ echo "📦 Creating Dokku app..."
 dokku apps:create "$APP_NAME" 2>/dev/null || echo "App already exists"
 
 # Install postgres plugin if not installed
-echo "🔌 Checking PostgreSQL plugin..."
-dokku plugin:list | grep postgres || sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git
+echo "🔌 Installing PostgreSQL plugin..."
+dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres 2>/dev/null || echo "PostgreSQL plugin already installed"
 
-# Create PostgreSQL service
+# Create PostgreSQL service with same name as app
 echo "🗄️  Creating PostgreSQL service..."
-dokku postgres:create "$POSTGRES_SERVICE" --image-version 16 2>/dev/null || echo "PostgreSQL service already exists"
+dokku postgres:create "$APP_NAME" 2>/dev/null || echo "PostgreSQL service already exists"
 
 # Link PostgreSQL to the app
 echo "🔗 Linking PostgreSQL to app..."
-dokku postgres:link "$POSTGRES_SERVICE" "$APP_NAME"
+dokku postgres:link "$APP_NAME" "$APP_NAME"
 
 # Set port mapping (internal 8080 -> external PORT assigned by Dokku)
 echo "🔧 Configuring ports..."
@@ -55,9 +54,10 @@ dokku storage:ensure-directory "$APP_NAME"
 dokku storage:mount "$APP_NAME" /var/lib/dokku/data/storage/"$APP_NAME":/evolution/instances
 
 # Get the DATABASE_URL and format it correctly
+echo "⚙️  Setting DATABASE_CONNECTION_URI from DATABASE_URL..."
 DB_URL=$(dokku config:get "$APP_NAME" DATABASE_URL)
 if [ ! -z "$DB_URL" ]; then
-  dokku config:set "$APP_NAME" DATABASE_CONNECTION_URI="$DB_URL"
+  dokku config:set --no-restart "$APP_NAME" DATABASE_CONNECTION_URI="$DB_URL"
 fi
 
 echo ""
@@ -73,5 +73,6 @@ echo "📊 Useful commands:"
 echo "   - View logs: dokku logs $APP_NAME -t"
 echo "   - View config: dokku config $APP_NAME"
 echo "   - Restart app: dokku ps:restart $APP_NAME"
-echo "   - PostgreSQL info: dokku postgres:info $POSTGRES_SERVICE"
+echo "   - PostgreSQL info: dokku postgres:info $APP_NAME"
+echo "   - PostgreSQL connect: dokku postgres:connect $APP_NAME"
 echo ""

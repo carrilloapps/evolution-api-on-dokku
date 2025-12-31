@@ -34,19 +34,16 @@ APP_NAME="evo"
 dokku apps:create $APP_NAME
 
 # 2. Install PostgreSQL plugin (if not installed)
-sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git
+dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 
-# 3. Create PostgreSQL service
-dokku postgres:create ${APP_NAME}-postgres --image-version 16
+# 3. Create PostgreSQL service (same name as app)
+dokku postgres:create $APP_NAME
 
 # 4. Link PostgreSQL to app
-dokku postgres:link ${APP_NAME}-postgres $APP_NAME
+dokku postgres:link $APP_NAME $APP_NAME
 
-# 5. Set port mapping
-dokku ports:set $APP_NAME http:80:8080
-
-# 6. Configure environment variables
-dokku config:set $APP_NAME \
+# 5. Configure environment variables
+dokku config:set --no-restart $APP_NAME \
   AUTHENTICATION_API_KEY="your_secure_api_key_here" \
   CONFIG_SESSION_PHONE_VERSION="2.3000.1031543708" \
   CONFIG_SESSION_PHONE_CLIENT="carrilloapps" \
@@ -63,9 +60,12 @@ dokku config:set $APP_NAME \
   DATABASE_SAVE_DATA_HISTORIC="true" \
   CACHE_LOCAL_ENABLED="true"
 
-# 7. Set DATABASE_CONNECTION_URI from DATABASE_URL
+# 6. Set DATABASE_CONNECTION_URI from DATABASE_URL
 DB_URL=$(dokku config:get $APP_NAME DATABASE_URL)
-dokku config:set $APP_NAME DATABASE_CONNECTION_URI="$DB_URL"
+dokku config:set --no-restart $APP_NAME DATABASE_CONNECTION_URI="$DB_URL"
+
+# 7. Set port mapping
+dokku ports:set $APP_NAME http:80:8080
 
 # 8. Create persistent storage
 dokku storage:ensure-directory $APP_NAME
@@ -127,13 +127,16 @@ dokku ps:restart evo
 dokku ps:scale evo web=1
 
 # PostgreSQL info
-dokku postgres:info evo-postgres
+dokku postgres:info evo
 
 # PostgreSQL backup
-dokku postgres:backup evo-postgres backup-$(date +%Y%m%d)
+dokku postgres:backup evo backup-$(date +%Y%m%d)
 
 # PostgreSQL console
-dokku postgres:connect evo-postgres
+dokku postgres:connect evo
+
+# PostgreSQL logs
+dokku postgres:logs evo -t
 
 # Enable SSL (Let's Encrypt)
 dokku letsencrypt:enable evo
@@ -159,7 +162,10 @@ dokku letsencrypt:enable evo
 4. **Set up regular backups**:
    ```bash
    # Add to cron
-   0 2 * * * dokku postgres:backup evo-postgres backup-$(date +\%Y\%m\%d)
+   0 2 * * * dokku postgres:backup evo backup-$(date +\%Y\%m\%d)
+   
+   # Or use Dokku's automated backups
+   dokku postgres:backup-schedule evo "0 2 * * *" backup-bucket
    ```
 
 ## 🐛 Troubleshooting
@@ -183,13 +189,21 @@ dokku ps:restart evo
 
 ### PostgreSQL connection errors
 
-```bash
-# Check if service is running
-dokku postgres:info evo-postgres
 
 # Verify link
-dokku postgres:links evo-postgres
+dokku postgres:links evo
 
+# Check DATABASE_URL is set
+dokku config:get evo DATABASE_URL
+dokku config:get evo DATABASE_CONNECTION_URI
+
+# Re-link if necessary
+dokku postgres:unlink evo evo
+dokku postgres:link evo evo
+
+# Set DATABASE_CONNECTION_URI from DATABASE_URL
+DB_URL=$(dokku config:get evo DATABASE_URL)
+dokku config:set evo DATABASE_CONNECTION_URI="$DB_URL"
 # Re-link if necessary
 dokku postgres:unlink evo-postgres evo
 dokku postgres:link evo-postgres evo
