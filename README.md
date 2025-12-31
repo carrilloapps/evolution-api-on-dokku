@@ -1,6 +1,6 @@
 # Evolution API en Dokku
 
-[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.2.3-green.svg)](https://github.com/EvolutionAPI/evolution-api)
+[![Evolution API](https://img.shields.io/badge/Evolution%20API-2.2.0-green.svg)](https://github.com/EvolutionAPI/evolution-api)
 [![Dokku](https://img.shields.io/badge/Dokku-Compatible-blue.svg)](https://github.com/dokku/dokku)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.1-blue.svg)](https://www.postgresql.org/)
 
@@ -345,8 +345,8 @@ For more information about Evolution API, visit the [official documentation](htt
 
 ### Changelog
 
-This deployment uses Evolution API v2.2.3 which includes enhanced stability and bug fixes.
+This deployment uses Evolution API v2.2.0 which includes stable and tested features.
 
-> **Note**: Evolution API v2.3.7 has been released but Docker images are not yet available on Docker Hub. This deployment will be updated once the official images are published.
+> **Note**: Newer versions of Evolution API are available but may require additional configuration or testing. This deployment uses v2.2.0 for maximum stability.
 
 For complete changelog and latest releases, visit [Evolution API Releases](https://github.com/EvolutionAPI/evolution-api/releases).
