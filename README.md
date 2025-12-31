@@ -1,93 +1,94 @@
-# Evolution API en Dokku
+# Evolution API on Dokku
 
 [![Evolution API](https://img.shields.io/badge/Evolution%20API-2.3.7-green.svg)](https://github.com/EvolutionAPI/evolution-api)
 [![Dokku](https://img.shields.io/badge/Dokku-Compatible-blue.svg)](https://github.com/dokku/dokku)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.1-blue.svg)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Descripción
+## Description
 
-Esta guía explica cómo desplegar [Evolution API](https://evolution-api.com/), una API REST completa para WhatsApp, en un servidor [Dokku](http://dokku.viewdocs.io/dokku/). Dokku es un PaaS ligero que simplifica el despliegue y gestión de aplicaciones usando Docker.
+This guide explains how to deploy [Evolution API](https://evolution-api.com/), a complete REST API for WhatsApp, on a [Dokku](http://dokku.viewdocs.io/dokku/) server. Dokku is a lightweight PaaS that simplifies application deployment and management using Docker.
 
-## Requisitos Previos
+## Prerequisites
 
-Antes de continuar, asegúrate de tener:
+Before proceeding, ensure you have:
 
-- Un servidor con [Dokku instalado](http://dokku.viewdocs.io/dokku/getting-started/installation/)
-- El [plugin de PostgreSQL](https://github.com/dokku/dokku-postgres) instalado en Dokku
-- (Opcional) El [plugin de Let's Encrypt](https://github.com/dokku/dokku-letsencrypt) para certificados SSL
-- Dominio apuntando a tu servidor (opcional)
+- A server with [Dokku installed](http://dokku.viewdocs.io/dokku/getting-started/installation/)
+- The [PostgreSQL plugin](https://github.com/dokku/dokku-postgres) installed on Dokku
+- (Optional) The [Let's Encrypt plugin](https://github.com/dokku/dokku-letsencrypt) for SSL certificates
+- Domain pointing to your server (optional)
 
-## Instrucciones de Instalación
+## Installation Instructions
 
-### 1. Crear la Aplicación
+### 1. Create the Application
 
-Conéctate a tu servidor Dokku y crea la app `evo`:
+Connect to your Dokku server and create the `evo` app:
 
 ```bash
 dokku apps:create evo
 ```
 
-### 2. Configurar PostgreSQL
+### 2. Configure PostgreSQL
 
-#### Instalar, Crear y Vincular PostgreSQL
+#### Install, Create and Link PostgreSQL
 
-1. Instalar el plugin de PostgreSQL:
+1. Install the PostgreSQL plugin:
 
    ```bash
    dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
    ```
 
-2. Crear el servicio PostgreSQL:
+2. Create the PostgreSQL service:
 
    ```bash
    dokku postgres:create evo
    ```
 
-3. Vincular PostgreSQL a la aplicación:
+3. Link PostgreSQL to the application:
 
    ```bash
    dokku postgres:link evo evo
    ```
 
-#### Configurar la URI de Conexión
+#### Configure Connection URI
 
-Evolution API requiere `DATABASE_CONNECTION_URI` además de `DATABASE_URL`:
+Evolution API requires `DATABASE_CONNECTION_URI` in addition to `DATABASE_URL`:
 
 ```bash
 dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
 ```
 
-#### Generar API Key de Autenticación
+#### Generate Authentication API Key
 
-Evolution API requiere una API Key global para todas las peticiones. Genera una de forma segura:
+Evolution API requires a global API Key for all requests. Generate one securely:
 
-**En Linux/macOS:**
+**On Linux/macOS:**
 ```bash
-# Genera una API Key aleatoria y segura de 32 caracteres
+# Generate a random secure 32-character API Key
 API_KEY=$(openssl rand -hex 16)
 dokku config:set evo AUTHENTICATION_API_KEY="$API_KEY"
 
-# Verifica que se configuró correctamente
+# Verify it was configured correctly
 dokku config:get evo AUTHENTICATION_API_KEY
 ```
 
-**En Windows (PowerShell):**
+**On Windows (PowerShell):**
 ```powershell
-# Genera una API Key aleatoria y segura de 32 caracteres
+# Generate a random secure 32-character API Key
 $API_KEY = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
-ssh tu-servidor "config:set evo AUTHENTICATION_API_KEY=$API_KEY"
+ssh your-server "config:set evo AUTHENTICATION_API_KEY=$API_KEY"
 
-# Verifica que se configuró correctamente
-ssh tu-servidor "config:get evo AUTHENTICATION_API_KEY"
+# Verify it was configured correctly
+ssh your-server "config:get evo AUTHENTICATION_API_KEY"
 ```
 
-> **Importante**: Guarda esta API Key en un lugar seguro. La necesitarás para todas las peticiones a la API.
+> **Important**: Save this API Key in a secure location. You'll need it for all API requests.
 
-#### Crear Usuario y Base de Datos Adicional (Opcional)
+#### Create Additional User and Database (Optional)
 
-Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta los siguientes comandos **uno por uno**:
+If you need an additional user and database for the application, run the following commands **one by one**:
 
-1. Crear el usuario `evo_app_user`:
+1. Create the `evo_app_user` user:
 
    ```bash
    dokku postgres:connect evo << 'EOF'
@@ -101,7 +102,7 @@ Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta l
    EOF
    ```
 
-2. Crear la base de datos `service_db`:
+2. Create the `service_db` database:
 
    ```bash
    dokku postgres:connect evo << 'EOF'
@@ -109,7 +110,7 @@ Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta l
    EOF
    ```
 
-3. Otorgar privilegios:
+3. Grant privileges:
 
    ```bash
    dokku postgres:connect evo << 'EOF'
@@ -117,172 +118,172 @@ Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta l
    EOF
    ```
 
-> **Nota**: Estos comandos son opcionales. La aplicación funciona correctamente con la base de datos principal creada automáticamente por el plugin de PostgreSQL.
+> **Note**: These commands are optional. The application works correctly with the main database automatically created by the PostgreSQL plugin.
 
-### 3. Configurar Almacenamiento Persistente
+### 3. Configure Persistent Storage
 
-Para persistir las instancias de WhatsApp entre reinicios, crea y monta un directorio:
+To persist WhatsApp instances between restarts, create and mount a directory:
 
 ```bash
 dokku storage:ensure-directory evo
 dokku storage:mount evo /var/lib/dokku/data/storage/evo:/evolution/instances
 ```
 
-### 4. Configurar Dominio y Puertos
+### 4. Configure Domain and Ports
 
-Configura el dominio para tu aplicación:
+Configure the domain for your application:
 
 ```bash
 dokku domains:set evo evo.example.com
 ```
 
-Mapea el puerto interno `8080` al puerto externo `80`:
+Map internal port `8080` to external port `80`:
 
 ```bash
 dokku ports:set evo http:80:8080
 ```
 
-### 5. Desplegar la Aplicación
+### 5. Deploy the Application
 
-Puedes desplegar la aplicación usando uno de los siguientes métodos:
+You can deploy the application using one of the following methods:
 
-#### Opción 1: Despliegue con `dokku git:sync`
+#### Option 1: Deploy with `dokku git:sync`
 
-Si tienes acceso SSH al servidor Dokku, puedes desplegar directamente desde el repositorio oficial:
+If you have SSH access to the Dokku server, you can deploy directly from the official repository:
 
 ```bash
 dokku git:sync --build evo https://github.com/carrilloapps/evolution-api-on-dokku.git
 ```
 
-Esto descargará el código, construirá y desplegará automáticamente.
+This will download the code, build, and deploy automatically.
 
-> **Nota**: Este comando debe ejecutarse desde el servidor Dokku via SSH.
+> **Note**: This command must be run from the Dokku server via SSH.
 
-#### Opción 2: Clonar y Push Manual
+#### Option 2: Clone and Manual Push
 
-Si prefieres trabajar localmente (funciona en **Windows, macOS y Linux**):
+If you prefer to work locally (works on **Windows, macOS, and Linux**):
 
-1. Clonar el repositorio:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/carrilloapps/evolution-api-on-dokku.git
    cd evolution-api-on-dokku
    ```
 
-2. Agregar tu servidor Dokku como remoto:
+2. Add your Dokku server as a remote:
 
    **Linux/macOS/Windows (Git Bash):**
    ```bash
-   git remote add dokku dokku@tu-servidor.com:evo
+   git remote add dokku dokku@your-server.com:evo
    ```
 
    **Windows (PowerShell/CMD):**
    ```powershell
-   git remote add dokku dokku@tu-servidor.com:evo
+   git remote add dokku dokku@your-server.com:evo
    ```
 
-3. Hacer push a Dokku:
+3. Push to Dokku:
 
    ```bash
    git push dokku master
    ```
 
-Elige el método que mejor se adapte a tu flujo de trabajo.
+Choose the method that best suits your workflow.
 
-### 6. Habilitar SSL (Opcional)
+### 6. Enable SSL (Optional)
 
-Asegura tu aplicación con un certificado SSL de Let's Encrypt:
+Secure your application with an SSL certificate from Let's Encrypt:
 
-1. Agregar el puerto HTTPS:
+1. Add the HTTPS port:
 
    ```bash
    dokku ports:add evo https:443:8080
    ```
 
-2. Instalar el plugin de Let's Encrypt:
+2. Install the Let's Encrypt plugin:
 
    ```bash
    dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
    ```
 
-3. Configurar el email de contacto:
+3. Configure the contact email:
 
    ```bash
-   dokku letsencrypt:set evo email tu@example.com
+   dokku letsencrypt:set evo email you@example.com
    ```
 
-4. Habilitar Let's Encrypt:
+4. Enable Let's Encrypt:
 
    ```bash
    dokku letsencrypt:enable evo
    ```
 
-5. Configurar renovación automática:
+5. Configure automatic renewal:
 
    ```bash
    dokku letsencrypt:cron-job --add
    ```
 
-## Finalización
+## Completion
 
-¡Felicidades! Tu instancia de Evolution API está funcionando. Puedes acceder en:
+Congratulations! Your Evolution API instance is up and running. You can access it at:
 
 - **HTTP**: `http://evo.example.com`
-- **HTTPS**: `https://evo.example.com` (si configuraste SSL)
+- **HTTPS**: `https://evo.example.com` (if you configured SSL)
 
-### Obtener tu API Key
+### Get Your API Key
 
-Obtén la API Key que generaste durante la instalación:
+Retrieve the API Key you generated during installation:
 
 ```bash
 dokku config:get evo AUTHENTICATION_API_KEY
 ```
 
-**Resultado de ejemplo:**
+**Example output:**
 ```
 oXZkh4B2FETGL31VeOzl6gqsdav9wmC0
 ```
 
-### Cambiar la API Key
+### Change the API Key
 
-Si deseas cambiar la API Key por una personalizada:
+If you want to change the API Key to a custom one:
 
 ```bash
-dokku config:set evo AUTHENTICATION_API_KEY="tu-nueva-api-key-super-segura"
+dokku config:set evo AUTHENTICATION_API_KEY="your-new-super-secure-api-key"
 ```
 
-### Probar la API
+### Test the API
 
-Prueba que la API esté funcionando correctamente:
+Test that the API is working correctly:
 
 ```bash
-# Reemplaza TU_API_KEY con la que obtuviste
+# Replace YOUR_API_KEY with the one you obtained
 curl -X GET https://evo.example.com \
   -H "apikey: oXZkh4B2FETGL31VeOzl6gqsdav9wmC0"
 ```
 
-Deberías recibir una respuesta exitosa de Evolution API.
+You should receive a successful response from Evolution API.
 
-## Comandos Útiles
+## Useful Commands
 
-### Logs y Monitoreo
+### Logging and Monitoring
 
 ```bash
-# Ver logs en tiempo real
+# View logs in real-time
 dokku logs evo -t
 
-# Ver configuración
+# View configuration
 dokku config evo
 ```
 
-### Gestión de PostgreSQL
+### PostgreSQL Management
 
 **Linux/macOS:**
 ```bash
-# Información de PostgreSQL
+# PostgreSQL information
 dokku postgres:info evo
 
-# Conectar a PostgreSQL
+# Connect to PostgreSQL
 dokku postgres:connect evo
 
 # Backup
@@ -291,35 +292,36 @@ dokku postgres:backup evo backup-$(date +%Y%m%d)
 
 **Windows (PowerShell):**
 ```powershell
-# Información de PostgreSQL
-ssh tu-servidor "postgres:info evo"
+# PostgreSQL information
+ssh your-server "postgres:info evo"
 
-# Conectar a PostgreSQL
-ssh tu-servidor "postgres:connect evo"
+# Connect to PostgreSQL
+ssh your-server "postgres:connect evo"
 
 # Backup
-$fecha = Get-Date -Format "yyyyMMdd"
-ssh tu-servidor "postgres:backup evo backup-$fecha"
+$date = Get-Date -Format "yyyyMMdd"
+ssh your-server "postgres:backup evo backup-$date"
 ```
 
-### Actualizaciones
+### Updates
 
-Para actualizar la aplicación:
+To update the application:
 
 ```bash
 git pull origin master
 git push dokku master
 ```
 
-Dokku ejecutará automáticamente las migraciones de Prisma y los health checks.
+Dokku will automatically run Prisma migrations and health checks.
 
-## Características
+## Features
 
-- ✅ Solo PostgreSQL (sin Redis/Cache)
-- ✅ Migraciones automáticas de Prisma
-- ✅ Health checks configurados
-- ✅ Almacenamiento persistente
-- ✅ Variables de entorno pre-configuradas
+- ✅ PostgreSQL only (no Redis/Cache)
+- ✅ Automatic Prisma migrations
+- ✅ Configured health checks
+- ✅ Persistent storage
+- ✅ Pre-configured environment variables
+- ✅ Resource limits (0.6 CPU, 512MB RAM)
 
 ## Contributing
 

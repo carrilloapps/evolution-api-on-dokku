@@ -5,7 +5,11 @@
   "stack": "container",
   "formation": {
     "web": {
-      "quantity": 1
+      "quantity": 1,
+      "resource": {
+        "memory": "512m",
+        "cpu": "0.6"
+      }
     }
   },
   "addons": [
