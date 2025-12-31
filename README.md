@@ -57,6 +57,42 @@ Evolution API requiere `DATABASE_CONNECTION_URI` además de `DATABASE_URL`:
 dokku config:set evo DATABASE_CONNECTION_URI="$(dokku config:get evo DATABASE_URL)"
 ```
 
+#### Crear Usuario y Base de Datos Adicional (Opcional)
+
+Si necesitas un usuario y base de datos adicional para la aplicación, ejecuta los siguientes comandos **uno por uno**:
+
+1. Crear el usuario `evo_app_user`:
+
+   ```bash
+   dokku postgres:connect evo << 'EOF'
+   DO $$
+   BEGIN
+       IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'evo_app_user') THEN
+           CREATE USER evo_app_user WITH PASSWORD 'jA54%B@rF7$pQs2*Lx8#mZvN9!wY3&tD';
+       END IF;
+   END
+   $$;
+   EOF
+   ```
+
+2. Crear la base de datos `service_db`:
+
+   ```bash
+   dokku postgres:connect evo << 'EOF'
+   CREATE DATABASE service_db;
+   EOF
+   ```
+
+3. Otorgar privilegios:
+
+   ```bash
+   dokku postgres:connect evo << 'EOF'
+   GRANT ALL PRIVILEGES ON DATABASE service_db TO evo_app_user;
+   EOF
+   ```
+
+> **Nota**: Estos comandos son opcionales. La aplicación funciona correctamente con la base de datos principal creada automáticamente por el plugin de PostgreSQL.
+
 ### 3. Configurar Almacenamiento Persistente
 
 Para persistir las instancias de WhatsApp entre reinicios, crea y monta un directorio:
@@ -160,16 +196,37 @@ Asegura tu aplicación con un certificado SSL de Let's Encrypt:
 - **HTTP**: `http://evo.example.com`
 - **HTTPS**: `https://evo.example.com` (si configuraste SSL)
 
-### Obtener tu API Key
+### API Key de Autenticación
+
+Evolution API genera automáticamente una **API Key global** en el primer despliegue.
+
+#### Obtener tu API Key actual:
 
 ```bash
 dokku config:get evo AUTHENTICATION_API_KEY
 ```
 
-### Probar la API
+#### Cambiar la API Key:
+
+Si deseas usar una API Key personalizada:
 
 ```bash
-curl https://evo.example.com
+dokku config:set evo AUTHENTICATION_API_KEY="tu-nueva-api-key-super-segura"
+```
+
+> **Importante**: 
+> - La API Key se genera automáticamente usando el generador `secret` de Dokku
+> - Es una cadena aleatoria y segura
+> - Guárdala en un lugar seguro, la necesitarás para todas las peticiones a la API
+> - Puedes cambiarla en cualquier momento con el comando anterior
+
+### Probar la API
+
+Una vez obtengas tu API Key, puedes probar la API:
+
+```bash
+curl -X GET https://evo.example.com \
+  -H "apikey: TU_API_KEY_AQUI"
 ```
 
 ## Comandos Útiles
