@@ -1,0 +1,33 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^http://localhost"
+    },
+    {
+      "pattern": "^https://localhost"
+    },
+    {
+      "pattern": "^http://127.0.0.1"
+    },
+    {
+      "pattern": "^https://evo.example.com"
+    },
+    {
+      "pattern": "^http://evo.example.com"
+    },
+    {
+      "pattern": "^http://your-server"
+    },
+    {
+      "pattern": "^https://your-server"
+    },
+    {
+      "pattern": "^dokku@your-server"
+    }
+  ],
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "aliveStatusCodes": [200, 206, 301, 302, 307, 308, 403]
+}

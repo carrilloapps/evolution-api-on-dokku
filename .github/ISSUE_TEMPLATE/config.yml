@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Evolution API Discussion
+    url: https://github.com/EvolutionAPI/evolution-api/discussions
+    about: Ask questions and discuss with the Evolution API community
+  - name: 📖 Documentation
+    url: https://doc.evolution-api.com/
+    about: Read the official Evolution API documentation
+  - name: 🆘 Dokku Help
+    url: http://dokku.viewdocs.io/dokku/
+    about: Get help with Dokku deployment platform

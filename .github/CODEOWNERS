@@ -1,0 +1,24 @@
+# Code Owners for Evolution API on Dokku
+#
+# These owners will be automatically requested for review when someone 
+# opens a pull request that modifies files in the specified paths.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owners - will be requested for review on all PRs
+* @carrilloapps
+
+# Documentation
+/docs/ @carrilloapps
+*.md @carrilloapps
+
+# Docker and Deployment Configuration
+Dockerfile @carrilloapps
+app.json @carrilloapps
+*.dockerfile @carrilloapps
+
+# GitHub Configuration
+/.github/ @carrilloapps
+
+# CI/CD Workflows
+/.github/workflows/ @carrilloapps
