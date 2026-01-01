@@ -21,8 +21,10 @@ This document provides tips and best practices for optimizing Evolution API perf
 |-----------|---------------------|---------------|
 | 1-10 users | 100-500 msg/day | Minimal (256MB RAM, 0.5 CPU) |
 | 10-50 users | 500-2000 msg/day | Small (512MB RAM, 1 CPU) |
-| 50-200 users | 2000-10000 msg/day | Medium (1GB RAM, 2 CPU) + Redis |
-| 200+ users | 10000+ msg/day | High (2GB+ RAM, 4+ CPU) + Redis + Optimizations |
+| 50-200 users | 2000-10000 msg/day | Medium (1GB RAM, 2 CPU) + Optional Redis |
+| 200+ users | 10000+ msg/day | High (2GB+ RAM, 4+ CPU) + Optional Redis + Optimizations |
+
+> **Note**: Redis is optional even for larger teams. Many deployments with 50-200 users work perfectly with PostgreSQL-only setup.
 
 ### Key Performance Indicators (KPIs)
 
@@ -185,11 +187,27 @@ WHERE schemaname = 'public'
 ORDER BY n_distinct DESC LIMIT 20;"
 ```
 
-## Caching with Redis
+## Caching with Redis (OPTIONAL)
 
-### Enable Redis for Better Performance
+> **⚠️ Important**: Redis is **NOT required** for Evolution API to function. This section is ONLY for teams with 50+ users experiencing performance issues. See the complete [Redis Integration Guide](redis-integration.md) for detailed instructions, monitoring, and troubleshooting.
 
-**For 50+ users**, Redis is highly recommended:
+### When to Consider Redis
+
+Only add Redis if you meet **ALL** of these criteria:
+- ✅ Team has 50+ active users
+- ✅ Message volume exceeds 2000 messages/day
+- ✅ API response times consistently exceed 200ms
+- ✅ Database queries are causing bottlenecks
+- ✅ You're willing to add infrastructure complexity
+
+**Do NOT add Redis if:**
+- ❌ Team has less than 50 users (PostgreSQL-only setup is sufficient)
+- ❌ Current performance is satisfactory
+- ❌ Want to minimize complexity and costs
+
+### Quick Redis Setup
+
+**For teams that determined Redis is needed**, here's a quick setup:
 
 ```bash
 # Install Redis plugin (if not installed)
@@ -208,6 +226,8 @@ dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
 # Restart application
 dokku ps:restart evo
 ```
+
+> **📖 Complete Guide**: For detailed Redis setup, configuration, monitoring, troubleshooting, and removal instructions, see the [Redis Integration Guide](redis-integration.md).
 
 ### Redis Configuration
 
@@ -235,6 +255,7 @@ dokku redis:connect evo
 2. **Set expiration times** for cached data
 3. **Use appropriate data structures** (hashes, lists, sets)
 4. **Regular backups** - `dokku redis:backup evo backup-$(date +%Y%m%d)`
+5. **Measure before and after** - Ensure Redis actually improves performance
 
 ## Storage Optimization
 

@@ -491,7 +491,9 @@ dokku network:set evo detach-post-create custom-network
 
 ## Redis Management (Optional)
 
-If you have Redis installed:
+> **Note**: Redis is **NOT required** and NOT included by default. These commands are only for teams that have installed Redis (50+ users). See [Redis Integration Guide](redis-integration.md) for complete setup and configuration.
+
+**If you have Redis installed:**
 
 ```bash
 # Create Redis instance
@@ -511,7 +513,13 @@ dokku redis:backup evo backup-$(date +%Y%m%d)
 
 # List backups
 dokku redis:backup-list evo
+
+# Remove Redis (if no longer needed)
+dokku redis:unlink evo evo
+dokku redis:destroy evo
 ```
+
+**For complete Redis documentation**, see [Redis Integration Guide](redis-integration.md).
 
 ## Automation Scripts
 

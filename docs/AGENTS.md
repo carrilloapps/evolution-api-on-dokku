@@ -14,6 +14,7 @@ docs/
 ├── installation.md             # Complete installation guide
 ├── system-requirements.md      # Hardware and software requirements
 ├── configuration.md            # Environment variables and settings
+├── redis-integration.md        # OPTIONAL: Redis caching guide (50+ users only)
 ├── useful-commands.md          # Command reference
 ├── performance.md              # Performance optimization
 └── changelog.md                # Version history
@@ -82,6 +83,37 @@ docs/
 - Include security considerations
 - Show configuration examples
 - Link to official documentation
+
+### redis-integration.md
+
+**Purpose**: Optional guide for integrating Redis caching (50+ users only)  
+**Audience**: Users with large teams experiencing performance issues  
+**Content**:
+- When to use Redis (and when NOT to)
+- Prerequisites and planning
+- Installation steps
+- Configuration and optimization
+- Performance verification
+- Monitoring and maintenance
+- Troubleshooting
+- Removal instructions
+- Performance comparison
+
+**Guidelines**:
+- **Emphasize Redis is OPTIONAL** and not required
+- Clearly state when Redis is beneficial (50+ users)
+- Warn against unnecessary complexity
+- Provide complete setup and removal instructions
+- Include performance metrics (before/after)
+- Show monitoring commands
+- Document common issues
+- Explain trade-offs (complexity vs performance)
+
+**Important Notes**:
+- Redis is **NOT included** in the default project
+- Most teams (1-50 users) do NOT need Redis
+- PostgreSQL-only setup is optimized for most use cases
+- Only add Redis when performance metrics indicate clear need
 
 ### useful-commands.md
 

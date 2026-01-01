@@ -53,7 +53,9 @@ dokku config:set evo DATABASE_SAVE_DATA_LABELS=false
 dokku config:set evo DATABASE_SAVE_MESSAGE_UPDATE=false
 ```
 
-#### Cache Options (Redis)
+#### Cache Options (Redis) - OPTIONAL
+
+> **Note**: Redis is NOT required for basic operation. Only consider enabling Redis for teams with 50+ users experiencing performance issues. See [Redis Integration Guide](redis-integration.md) for complete setup instructions.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -61,8 +63,10 @@ dokku config:set evo DATABASE_SAVE_MESSAGE_UPDATE=false
 | `CACHE_REDIS_URI` | Redis connection URI | - |
 | `CACHE_REDIS_PREFIX_KEY` | Redis key prefix | `evo` |
 
-**Example - Enable Redis:**
+**Example - Enable Redis (only if Redis is installed):**
 ```bash
+# First, install and link Redis (see redis-integration.md)
+# Then configure:
 dokku config:set evo CACHE_REDIS_ENABLED=true
 dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
 ```

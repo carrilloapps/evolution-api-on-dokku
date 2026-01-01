@@ -56,8 +56,8 @@ This project provides:
 
 - **Evolution API**: WhatsApp REST API (v2.3.7)
 - **Dokku**: Docker-powered PaaS
-- **PostgreSQL**: Primary database (v18.1)
-- **Redis**: Optional caching layer (for 50+ users)
+- **PostgreSQL**: Primary database (v18.1) - **INCLUDED BY DEFAULT**
+- **Redis**: **OPTIONAL** caching layer (only for 50+ users, not included by default)
 - **Docker**: Container runtime
 - **Nginx**: Reverse proxy (managed by Dokku)
 - **Let's Encrypt**: SSL/TLS certificates
@@ -144,10 +144,11 @@ This project provides:
 ### Design Principles
 
 1. **Simplicity First**: Default configuration should work for 1-10 users with minimal resources
-2. **Scalability**: Easy to scale up as team grows
-3. **Cross-Platform**: All instructions work on Linux, macOS, and Windows
-4. **Documentation**: Comprehensive, clear, and always up-to-date
-5. **Best Practices**: Follow Dokku, Docker, and PostgreSQL best practices
+2. **PostgreSQL Only**: Redis is NOT included by default - only recommended for 50+ users
+3. **Scalability**: Easy to scale up as team grows (with optional Redis integration)
+4. **Cross-Platform**: All instructions work on Linux, macOS, and Windows
+5. **Documentation**: Comprehensive, clear, and always up-to-date
+6. **Best Practices**: Follow Dokku, Docker, and PostgreSQL best practices
 
 ### Configuration Principles
 
@@ -318,6 +319,7 @@ See [docs/system-requirements.md](docs/system-requirements.md) for detailed requ
 - [Installation Guide](docs/installation.md)
 - [System Requirements](docs/system-requirements.md)
 - [Configuration](docs/configuration.md)
+- [Redis Integration](docs/redis-integration.md) - **OPTIONAL** (only for 50+ users)
 - [Useful Commands](docs/useful-commands.md)
 - [Performance & Optimization](docs/performance.md)
 - [Changelog](docs/changelog.md)

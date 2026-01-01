@@ -8,6 +8,27 @@ Current deployment uses **Evolution API v2.3.7**
 
 ## Version 2.3.7 - Current
 
+### Documentation Updates (2026-01-01)
+
+#### Redis Integration Clarification
+- 📚 **NEW**: Added comprehensive [Redis Integration Guide](redis-integration.md)
+- 📚 **CLARIFIED**: Redis is **OPTIONAL** and NOT included by default
+- 📚 **UPDATED**: All documentation now emphasizes PostgreSQL-only default setup
+- 📚 **IMPROVED**: Clear guidance on when to use Redis (50+ users only)
+- 📚 **ADDED**: Redis installation, configuration, monitoring, and removal instructions
+- 📚 **ENHANCED**: Performance comparison with and without Redis
+
+#### Updated Files
+- `README.md` - Added Redis Integration link, clarified optional nature
+- `docs/configuration.md` - Added warning that Redis is optional
+- `docs/performance.md` - Updated caching section with clear Redis guidance
+- `docs/system-requirements.md` - Emphasized Redis is only for 50+ users
+- `docs/useful-commands.md` - Added Redis optional note with link to guide
+- `docs/AGENTS.md` - Updated structure and guidelines for Redis documentation
+- `AGENTS.md` (root) - Clarified Redis is optional, not default
+
+**Key Message**: Evolution API works perfectly without Redis for teams under 50 users. PostgreSQL-only setup is optimized for most use cases.
+
 ### Features
 
 #### WhatsApp Business Meta Templates

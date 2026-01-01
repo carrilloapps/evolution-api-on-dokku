@@ -74,18 +74,20 @@ For 1-10 users, you'll need:
 - **[System Requirements](docs/system-requirements.md)** - Hardware and software requirements
 - **[Configuration](docs/configuration.md)** - Environment variables and settings
 - **[Performance & Optimization](docs/performance.md)** - Tips for scaling and optimization
+- **[Redis Integration](docs/redis-integration.md)** - Optional Redis caching guide (for 50+ users)
 - **[Useful Commands](docs/useful-commands.md)** - Common management commands
 - **[Changelog](docs/changelog.md)** - Version history and updates
 
 ## Features
 
 - ✅ **Minimal resource usage** (256MB RAM, 0.5 CPU by default)
-- ✅ **PostgreSQL only** (no Redis/Cache for simplicity)
+- ✅ **PostgreSQL only** (no cache/Redis required - works perfectly for 1-50 users)
 - ✅ **Automatic Prisma migrations**
 - ✅ **Optimized health checks** (single instance)
 - ✅ **Persistent storage**
 - ✅ **Pre-configured environment variables**
 - ✅ **Scalable** (easily adjust resources based on user load)
+- 🔧 **Optional Redis integration** (only needed for 50+ users - see [Redis Integration Guide](docs/redis-integration.md))
 
 ## Contributing
 

@@ -34,8 +34,8 @@ master
 - ✅ **Require conversation resolution before merging**
   - All PR comments must be resolved
 
-- ✅ **Require linear history**
-  - Prevents merge commits, keeps history clean
+- ❌ **Require linear history**
+  - Not required - allows merge commits (preserves history context and is safer)
 
 - ❌ **Require deployments to succeed before merging**
   - Not needed for this project
@@ -108,7 +108,7 @@ develop
 | Status checks | ✅ Yes | ✅ Yes |
 | Up to date branch | ✅ Yes | ✅ Yes |
 | Resolve conversations | ✅ Yes | ✅ Yes |
-| Linear history | ✅ Yes | ❌ No |
+| Linear history | ❌ No | ❌ No |
 | Force push | ❌ No | ❌ No |
 | Delete branch | ❌ No | ❌ No |
 | Bypass for admins | ❌ No | ✅ Yes |
@@ -254,6 +254,70 @@ After setting up, test by:
 2. Push urgent fix
 3. Re-enable protection rule immediately
 4. Create follow-up PR to document changes
+
+---
+
+## Why NOT Require Linear History?
+
+### ✅ Best Practices: Allow Merge Commits
+
+This project **does NOT require linear history** on any branch. Here's why:
+
+#### Advantages of Merge Commits (Tree Structure)
+
+1. **Preserves Complete History**
+   - Shows exactly when and how features were integrated
+   - Maintains context of why changes were grouped together
+   - Easier to understand project evolution
+
+2. **Safer Workflow**
+   - No need to rewrite history (no force pushes)
+   - Original commit SHAs are preserved
+   - Reduces risk of losing work or conflicts
+
+3. **Better Collaboration**
+   - Team members don't need to rebase constantly
+   - Fewer merge conflicts
+   - Clearer separation of feature work
+
+4. **Easier Rollbacks**
+   - Can revert entire feature with single merge commit
+   - Clear boundaries between features
+   - Better for debugging ("when did this feature merge?")
+
+#### Example: Tree Structure vs Linear
+
+**With Merge Commits (Recommended):**
+```
+* Merge pull request #5 from feature/redis-docs
+|\
+| * Add Redis integration guide
+| * Update configuration docs
+|/
+* Merge pull request #4 from fix/broken-links
+|\
+| * Fix broken markdown links
+|/
+* Initial commit
+```
+
+**With Linear History (NOT Recommended):**
+```
+* Add Redis integration guide
+* Update configuration docs
+* Fix broken markdown links
+* Initial commit
+```
+
+The tree structure shows **when features were integrated** and **maintains context**.
+
+#### When Linear History Might Be Preferred
+
+- Very small solo projects
+- Repositories with extremely simple workflows
+- Projects where commit history aesthetics are prioritized over safety
+
+**For collaborative documentation projects like this one, merge commits are the better choice.**
 
 ---
 

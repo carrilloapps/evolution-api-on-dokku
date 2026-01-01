@@ -25,8 +25,10 @@ This document outlines the hardware and software requirements for deploying Evol
 
 - **Let's Encrypt Plugin**: For SSL/TLS certificates
   - Installation: `dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git`
-- **Redis Plugin**: For caching and improved performance (50+ users)
+- **Redis Plugin**: **ONLY for teams with 50+ users** (not needed for basic operation)
   - Installation: `dokku plugin:install https://github.com/dokku/dokku-redis.git redis`
+  - Guide: See [Redis Integration Guide](redis-integration.md) for complete setup
+  - **Note**: Redis is NOT included by default and adds complexity. Only install if performance metrics indicate it's needed.
 
 ## Hardware Requirements
 
@@ -86,9 +88,10 @@ dokku resource:limit evo --memory 1024m --cpu 2
 ```
 
 **Additional Recommendations:**
-- Enable Redis caching for improved performance
+- **Consider Redis caching** if response times are slow (see [Redis Integration Guide](redis-integration.md))
 - Set up regular database backups
 - Monitor resource usage weekly
+- **Note**: Most medium teams (50-200 users) work fine without Redis
 
 ### High-Volume Deployments (200+ users)
 
@@ -111,7 +114,7 @@ dokku resource:limit evo --memory 2048m --cpu 4
 ```
 
 **Additional Recommendations:**
-- **Redis caching** (required for performance)
+- **Redis caching strongly recommended** for optimal performance (see [Redis Integration Guide](redis-integration.md))
 - **Database optimization** (disable unnecessary data logging)
 - **Load balancing** (consider horizontal scaling)
 - **Monitoring** (set up alerts for CPU/RAM usage)
@@ -181,11 +184,12 @@ dokku resource:limit evo --memory 512m --cpu 1
 # Increase resources
 dokku resource:limit evo --memory 1024m --cpu 2
 
-# Enable Redis caching
-dokku redis:create evo
-dokku redis:link evo evo
-dokku config:set evo CACHE_REDIS_ENABLED=true
-dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
+# OPTIONAL: Enable Redis caching (see redis-integration.md for details)
+# Only add Redis if performance metrics indicate it's needed:
+# dokku redis:create evo
+# dokku redis:link evo evo
+# dokku config:set evo CACHE_REDIS_ENABLED=true
+# dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
 ```
 
 **Best for**: 
@@ -194,7 +198,9 @@ dokku config:set evo CACHE_REDIS_URI="$(dokku config:get evo REDIS_URL)"
 - Marketing departments
 
 **Considerations**:
-- Redis significantly improves performance
+- **Most medium teams work fine without Redis** (PostgreSQL-only setup is sufficient)
+- **Consider Redis only if** response times consistently exceed 200ms
+- See [Redis Integration Guide](redis-integration.md) for detailed instructions
 - Monitor database size regularly
 - Set up automated backups
 
