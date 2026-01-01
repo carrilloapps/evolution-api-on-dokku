@@ -139,7 +139,7 @@ For security issues specific to Evolution API:
 
 For security issues specific to Dokku:
 
-- Visit the [Dokku Security Documentation](https://dokku.com/docs/deployment/security/)
+- Visit the [Dokku Documentation](https://dokku.com/docs/)
 - Keep Dokku updated to the latest stable version
 - Follow Dokku security best practices
 

@@ -23,7 +23,14 @@ evolution-api-on-dokku/
 ├── .github/                    # GitHub specific files (templates, workflows)
 │   ├── ISSUE_TEMPLATE/         # Issue templates
 │   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── BRANCH_PROTECTION.md    # Branch protection guide
+│   ├── CODEOWNERS              # Code ownership
+│   ├── FUNDING.yml             # Sponsorship configuration
+│   ├── SECURITY.md             # Security policy
+│   ├── dependabot.yml          # Dependency updates
 │   └── workflows/              # CI/CD workflows
+│       ├── link-check.yml      # Markdown link validation (ONLY workflow)
+│       └── markdown-link-check-config.json
 └── docs/                       # Complete documentation
     ├── AGENTS.md               # Documentation directory guidance
     ├── installation.md         # Detailed installation guide
@@ -157,6 +164,59 @@ This project provides:
 4. **Troubleshooting**: Common issues and solutions
 5. **Next Steps**: Always link to related documentation
 
+## CI/CD and Quality Assurance
+
+### GitHub Actions Workflows
+
+This project uses a **minimalist CI/CD approach** focused on what matters:
+
+**Active Workflow:**
+- **link-check.yml**: Validates all markdown links in documentation
+  - Runs on: push, pull_request, schedule (weekly), workflow_dispatch
+  - Configuration: `.github/workflows/markdown-link-check-config.json`
+  - Purpose: Ensures all documentation links are working and not broken
+  - Tested with: `act -j link-check` (✅ passes)
+
+**Removed Workflows:**
+- ~~markdown-lint.yml~~ (Removed: Too strict, 280+ formatting errors, not critical for documentation)
+- ~~.markdownlint.json~~ (Removed: Configuration no longer needed)
+
+### Why Only Link Check?
+
+For a documentation project like this:
+1. **Link validation is critical** - Broken links frustrate users
+2. **Markdown formatting is subjective** - Strict linting creates unnecessary friction
+3. **Maintainability matters** - Simple CI/CD is easier to maintain
+4. **Focus on content** - Documentation should prioritize clarity over formatting rules
+
+### Testing Workflows Locally
+
+Use [act](https://github.com/nektos/act) to test GitHub Actions locally:
+
+```bash
+# List available workflows
+act --list
+
+# Run link check workflow
+act -j link-check
+```
+
+**Windows (PowerShell):**
+```powershell
+# Install act via Chocolatey
+choco install act-cli
+
+# Test link check
+act -j link-check
+```
+
+### Branch Protection
+
+Refer to [.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md) for recommended settings.
+
+**Required status check:**
+- `Markdown Link Check` - Must pass before merging to master/develop
+
 ## Environment and Deployment
 
 ### Supported Platforms
@@ -182,12 +242,17 @@ See [docs/system-requirements.md](docs/system-requirements.md) for detailed requ
 ### Before Committing Changes
 
 1. **Test Documentation**:
-   - Verify all links work
-   - Check markdown formatting
+   - Verify all links work (run `act -j link-check`)
+   - Check markdown formatting (visual review, no automated linting)
    - Test code examples on target platform
    - Verify cross-references
 
-2. **Test Configuration**:
+2. **Test GitHub Actions Workflows**:
+   - Run `act -j link-check` to test locally
+   - Ensure all documentation links are valid
+   - Fix any broken links before committing
+
+3. **Test Configuration**:
    - Test in minimal environment (256MB RAM)
    - Test scaling to larger environments
    - Verify all environment variables work
