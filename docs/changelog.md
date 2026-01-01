@@ -67,7 +67,7 @@ No special migration steps required for upgrading to v2.3.7.
 
 ### Links
 
-- [Evolution API v2.3.7 Release](https://github.com/EvolutionAPI/evolution-api/releases/tag/v2.3.7)
+- [Evolution API Releases](https://github.com/EvolutionAPI/evolution-api/releases)
 - [Official Documentation](https://doc.evolution-api.com/)
 
 ---
@@ -126,7 +126,7 @@ Follow the [Evolution API GitHub](https://github.com/EvolutionAPI/evolution-api)
 For issues, questions, or feature requests:
 
 - **Evolution API Issues**: [GitHub Issues](https://github.com/EvolutionAPI/evolution-api/issues)
-- **Dokku Documentation**: [Dokku Docs](http://dokku.viewdocs.io/dokku/)
+- **Dokku Documentation**: [Dokku Docs](https://dokku.com/docs/)
 - **Community Support**: [Evolution API Discord](https://evolution-api.com/discord)
 
 ---

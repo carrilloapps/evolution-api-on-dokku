@@ -602,6 +602,6 @@ dokku ps:rebuild evo
 
 ## References
 
-- [Dokku CLI Reference](http://dokku.viewdocs.io/dokku/deployment/application-management/)
+- [Dokku CLI Reference](https://dokku.com/docs/deployment/application-management/)
 - [PostgreSQL Plugin](https://github.com/dokku/dokku-postgres)
 - [Evolution API Documentation](https://doc.evolution-api.com/)

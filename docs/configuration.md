@@ -466,5 +466,5 @@ dokku config:set evo DATABASE_SAVE_DATA_HISTORIC=true
 ## References
 
 - [Evolution API Documentation](https://doc.evolution-api.com/)
-- [Dokku Configuration](http://dokku.viewdocs.io/dokku/configuration/)
+- [Dokku Configuration](https://dokku.com/docs/configuration/)
 - [PostgreSQL Plugin](https://github.com/dokku/dokku-postgres)

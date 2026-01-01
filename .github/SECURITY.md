@@ -13,7 +13,7 @@ We release patches for security vulnerabilities in the deployment configuration.
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you discover a security vulnerability in this deployment configuration, please send an email to the maintainer. You can find the contact information in the [FUNDING.yml](.github/FUNDING.yml) file or GitHub profile.
+If you discover a security vulnerability in this deployment configuration, please send an email to the maintainer. You can find the contact information in the [FUNDING.yml](FUNDING.yml) file or GitHub profile.
 
 Please include the following information:
 
@@ -139,7 +139,7 @@ For security issues specific to Evolution API:
 
 For security issues specific to Dokku:
 
-- Visit the [Dokku Security Documentation](http://dokku.viewdocs.io/dokku/deployment/security/)
+- Visit the [Dokku Security Documentation](https://dokku.com/docs/deployment/security/)
 - Keep Dokku updated to the latest stable version
 - Follow Dokku security best practices
 
@@ -151,7 +151,7 @@ For PostgreSQL security:
 - Enable SSL/TLS connections
 - Use strong passwords
 - Regular security patches
-- Follow [PostgreSQL Security Best Practices](https://www.postgresql.org/docs/current/security.html)
+- Follow [PostgreSQL Security Best Practices](https://www.postgresql.org/docs/current/runtime.html)
 
 ## Compliance
 

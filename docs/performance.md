@@ -629,6 +629,6 @@ wrk -t10 -c100 -d30s -H "apikey: YOUR_API_KEY" https://evo.example.com/
 ## References
 
 - [Evolution API Documentation](https://doc.evolution-api.com/)
-- [Dokku Scaling Guide](http://dokku.viewdocs.io/dokku/deployment/scaling/)
+- [Dokku Scaling Guide](https://dokku.com/docs/deployment/scaling/)
 - [PostgreSQL Performance Tuning](https://wiki.postgresql.org/wiki/Performance_Optimization)
 - [Redis Best Practices](https://redis.io/topics/optimization)

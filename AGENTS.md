@@ -244,7 +244,7 @@ See [docs/system-requirements.md](docs/system-requirements.md) for detailed requ
 ### External Documentation
 
 - [Evolution API Documentation](https://doc.evolution-api.com/)
-- [Dokku Documentation](http://dokku.viewdocs.io/dokku/)
+- [Dokku Documentation](https://dokku.com/docs/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [Docker Documentation](https://docs.docker.com/)
 

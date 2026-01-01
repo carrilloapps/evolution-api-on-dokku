@@ -49,9 +49,9 @@ assignees: ''
 
 ## Checklist
 
-- [ ] I have read the [documentation](../docs)
+- [ ] I have read the [documentation](../../docs)
 - [ ] I have searched existing issues for similar questions
-- [ ] I have tried the [troubleshooting steps](../docs/useful-commands.md#troubleshooting)
+- [ ] I have tried the [troubleshooting steps](../../docs/useful-commands.md#troubleshooting)
 - [ ] I have checked the [Evolution API documentation](https://doc.evolution-api.com/)
 - [ ] I have provided all relevant environment information
 
@@ -59,10 +59,10 @@ assignees: ''
 
 <!-- List the documentation pages or resources you've already checked -->
 
-- [ ] [Installation Guide](../docs/installation.md)
-- [ ] [System Requirements](../docs/system-requirements.md)
-- [ ] [Configuration Guide](../docs/configuration.md)
-- [ ] [Useful Commands](../docs/useful-commands.md)
-- [ ] [Performance & Optimization](../docs/performance.md)
+- [ ] [Installation Guide](../../docs/installation.md)
+- [ ] [System Requirements](../../docs/system-requirements.md)
+- [ ] [Configuration Guide](../../docs/configuration.md)
+- [ ] [Useful Commands](../../docs/useful-commands.md)
+- [ ] [Performance & Optimization](../../docs/performance.md)
 - [ ] [Evolution API Docs](https://doc.evolution-api.com/)
-- [ ] [Dokku Documentation](http://dokku.viewdocs.io/dokku/)
+- [ ] [Dokku Documentation](https://dokku.com/docs/)

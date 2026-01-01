@@ -23,6 +23,12 @@
     },
     {
       "pattern": "^dokku@your-server"
+    },
+    {
+      "pattern": "^http://dokku.viewdocs.io"
+    },
+    {
+      "pattern": "https://github.com/EvolutionAPI/evolution-api/releases"
     }
   ],
   "timeout": "20s",

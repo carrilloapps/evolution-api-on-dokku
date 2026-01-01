@@ -18,13 +18,13 @@
 
 ## About
 
-This guide explains how to deploy [Evolution API](https://evolution-api.com/), a complete REST API for WhatsApp, on a [Dokku](http://dokku.viewdocs.io/dokku/) server. Dokku is a lightweight PaaS that simplifies application deployment and management using Docker.
+This guide explains how to deploy [Evolution API](https://evolution-api.com/), a complete REST API for WhatsApp, on a [Dokku](https://dokku.com/docs/) server. Dokku is a lightweight PaaS that simplifies application deployment and management using Docker.
 
 ## Prerequisites
 
 Before proceeding, ensure you have:
 
-- A server with [Dokku installed](http://dokku.viewdocs.io/dokku/getting-started/installation/)
+- A server with [Dokku installed](https://dokku.com/docs/getting-started/installation/)
 - The [PostgreSQL plugin](https://github.com/dokku/dokku-postgres) installed on Dokku
 - (Optional) The [Let's Encrypt plugin](https://github.com/dokku/dokku-letsencrypt) for SSL certificates
 - Domain pointing to your server (optional)

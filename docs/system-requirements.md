@@ -15,7 +15,7 @@ This document outlines the hardware and software requirements for deploying Evol
 ### Required
 
 - **Dokku**: Version 0.30.0 or higher
-  - Installation guide: [Dokku Getting Started](http://dokku.viewdocs.io/dokku/getting-started/installation/)
+  - Installation guide: [Dokku Getting Started](https://dokku.com/docs/getting-started/installation/)
 - **PostgreSQL Plugin**: Latest version
   - Installation: `dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres`
 - **Docker**: Version 20.10+ (automatically installed with Dokku)
